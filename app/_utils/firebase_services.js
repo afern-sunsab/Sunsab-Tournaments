@@ -48,23 +48,38 @@ export const getTournaments = async () => {
 }
 
 export const getTournament = async (id) => {
-
+	const document = await getDocs(query(collection(db, "tournaments"), where("id", "==", id)));
+	const tournament = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
+	console.log(`Fetched tournament ${tournament.name}`)
+	return tournament;
 }
 
 export const getBrackets = async () => {
-
+	const documents = await getDocs(collection(db, "brackets"));
+	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+	console.log("Fetched brackets")
+	return data;
 }
 
 export const getBracket = async (id) => {
-
+	const document = await getDocs(query(collection(db, "brackets"), where("id", "==", id)));
+	const bracket = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
+	console.log(`Fetched bracket ${bracket.name}`)
+	return bracket;
 }
 
 export const getMatches = async () => {
-
+	const documents = await getDocs(collection(db, "matches"));
+	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+	console.log("Fetched matches")
+	return data;
 }
 
 export const getMatch = async (id) => {
-
+	const document = await getDocs(query(collection(db, "matches"), where("id", "==", id)));
+	const match = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
+	console.log(`Fetched match ${match.name}`)
+	return match;
 }
 
 export const createTournament = async () => {
@@ -80,19 +95,31 @@ export const createMatch = async () => {
 }
 
 export const updateUser = async () => {
-
+	const { docId, ...updatedUserPrunedDocID } = updatedUser;
+	const userRef = doc(db, "users", docId);
+	await updateDoc(userRef, updatedUserPrunedDocID);
+	console.log(`Updated user ${updatedUser.name}`);
 }
 
-export const updateTournament = async () => {
-
+export const updateTournament = async (tournament) => {
+	const { docId, ...tournamentPrunedDocID } = tournament;
+	const tournamentRef = doc(db, "tournaments", docId);
+	await updateDoc(tournamentRef, tournamentPrunedDocID);
+	console.log(`Updated tournament ${tournament.name}`);
 }
 
 export const updateBracket = async () => {
-
+	const { docId, ...updatedBracketPrunedDocID } = updatedBracket;
+	const bracketRef = doc(db, "brackets", docId);
+	await updateDoc(bracketRef, updatedBracketPrunedDocID);
+	console.log(`Updated bracket ${updatedBracket.name}`);
 }
 
 export const updatematch = async () => {
-
+	const { docId, ...updatedMatchPrunedDocID } = updatedMatch;
+	const matchRef = doc(db, "matches", docId);
+	await updateDoc(matchRef, updatedMatchPrunedDocID);
+	console.log(`Updated match ${updatedMatch.name}`);
 }
 
 export const dateToTimestamp = (value) => {

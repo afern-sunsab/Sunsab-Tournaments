@@ -1,10 +1,10 @@
 'use client'
 import React from "react"
 import { useState, useEffect } from "react"
-import { getTournaments } from "../_utils/firebase_services"
+import { getTournaments, updateTournament } from "../_utils/firebase_services"
 
 
-export default function page()
+export default function Page()
 {
 	const [tournaments, setTournaments] = useState([]);
 
@@ -15,6 +15,14 @@ export default function page()
 		}
 		fetchTournaments();
 	}, []);
+	
+	const handleJoin = async (tournament) => {
+		//TODO: Implement join tournament
+		//For now, here's a test to change the name of the tournament
+		tournament.name = "Joined";
+		await updateTournament(tournament);
+
+	}
 
 	return(
 		<main className="w-full h-full">
@@ -25,7 +33,7 @@ export default function page()
 					<h2>Name: {tournament.name}</h2>
 					<p>Game: {tournament.game}</p>
 					<p>Description: {tournament.description}</p>
-					<button>Join</button>
+					<button onClick={() => handleJoin(tournament)}>Join</button>
 				</div>
 			)) : <p>Loading</p>
 			}
