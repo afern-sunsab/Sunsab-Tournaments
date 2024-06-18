@@ -39,3 +39,55 @@ export const getUser = async (uid) => {
 	console.log(`Fetched user ${object.name} with these attributes${object}`);
 	return object;
 }
+
+export const getTournaments = async () => {
+
+}
+
+export const getTournament = async (id) => {
+
+}
+
+export const getBrackets = async () => {
+
+}
+
+export const getBracket = async (id) => {
+
+}
+
+export const getMatches = async () => {
+
+}
+
+export const getMatch = async (id) => {
+
+}
+
+export const createTournament = async () => {
+
+}
+
+export const createBracket = async () => {
+
+}
+
+export const createMatch = async () => {
+
+}
+
+export const updateUser = async () => {
+
+}
+
+export const updateTournament = async () => {
+
+}
+
+export const updateBracket = async () => {
+
+}
+
+export const updatematch = async () => {
+
+}
