@@ -82,16 +82,22 @@ export const getMatch = async (id) => {
 	return match;
 }
 
-export const createTournament = async () => {
-
+export const createTournament = async (tournament) => {
+	const document = await addDoc(collection(db, "tournaments"), tournament)
+	console.log(`Added new tournament ${tournament.name}`)
+	return document;
 }
 
 export const createBracket = async () => {
-
+	const document = await addDoc(collection(db, "brackets"), bracket)
+	console.log(`Added new bracket ${bracket.name}`)
+	return document;
 }
 
 export const createMatch = async () => {
-
+	const document = await addDoc(collection(db, "matches"), match)
+	console.log(`Added new match ${match.name}`)
+	return document;
 }
 
 export const updateUser = async () => {
