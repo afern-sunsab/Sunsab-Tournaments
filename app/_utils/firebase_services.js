@@ -41,7 +41,10 @@ export const getUser = async (uid) => {
 }
 
 export const getTournaments = async () => {
-
+	const documents = await getDocs(collection(db, "tournaments"));
+    const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+    console.log("Fetched tournaments")
+    return data;
 }
 
 export const getTournament = async (id) => {
