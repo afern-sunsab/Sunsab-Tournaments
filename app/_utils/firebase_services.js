@@ -32,3 +32,10 @@ export const updateObject = async (type, updatedObject, confirm) => {
 		alert(`Updated ${type} object`);
 	}
 }
+
+export const getUser = async (uid) => {
+	const document = await getDocs(query(collection(db, users), where("uid", "==", uid)));
+	const object = document.docs.map(doc => ({ docId: doc.id, ...doc.data()}))[0];
+	console.log(`Fetched user ${object.name} with these attributes${object}`);
+	return object;
+}
