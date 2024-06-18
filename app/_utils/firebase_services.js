@@ -1,6 +1,6 @@
 "use client"
 
-import { collection, doc, getDocs, updateDoc, addDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
 export const getObjects = async (type) => {
@@ -41,7 +41,10 @@ export const getUser = async (uid) => {
 }
 
 export const getTournaments = async () => {
-
+	const documents = await getDocs(collection(db, "tournaments"));
+    const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+    console.log("Fetched tournaments")
+    return data;
 }
 
 export const getTournament = async (id) => {
@@ -90,4 +93,17 @@ export const updateBracket = async () => {
 
 export const updatematch = async () => {
 
+}
+
+export const dateToTimestamp = (value) => {
+	const date = new Date(value);
+	const timestamp = Timestamp.fromDate(date);
+	console.log(`Converted date ${date} to timestamp ${timestamp}`)
+	return timestamp;
+}
+
+export const timestampToDate = (timestamp) => {
+	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
+	console.log(`Converted timestamp ${timestamp} to date ${date}`);
+	return date;
 }
