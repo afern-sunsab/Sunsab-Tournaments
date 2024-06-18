@@ -1,6 +1,6 @@
 "use client"
 
-import { collection, doc, getDocs, updateDoc, addDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
 export const getObjects = async (type) => {
@@ -90,4 +90,17 @@ export const updateBracket = async () => {
 
 export const updatematch = async () => {
 
+}
+
+export const dateToTimestamp = (value) => {
+	const date = new Date(value);
+	const timestamp = Timestamp.fromDate(date);
+	console.log(`Converted date ${date} to timestamp ${timestamp}`)
+	return timestamp;
+}
+
+export const timestampToDate = (timestamp) => {
+	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
+	console.log(`Converted timestamp ${timestamp} to date ${date}`);
+	return date;
 }
