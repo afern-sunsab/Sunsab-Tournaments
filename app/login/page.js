@@ -33,7 +33,7 @@ function handleEmailPasswordSignIn(e){
     signInWithEmailAndPassword(auth, email, password)
 	.then((userCredential) => {
 		//Only allow logging in if email is verified
-		if(userCredential.user.emailVerified){
+		/*if(userCredential.user.emailVerified){
 			console.log("Email is verified.");
 			window.location.href = `/dashboard`;
 		}
@@ -41,6 +41,7 @@ function handleEmailPasswordSignIn(e){
 			alert("Email is not verified.");
 			//signOut(auth);
 		}
+      */
 	})
       .catch((error) => {
         // Handle Errors here.
