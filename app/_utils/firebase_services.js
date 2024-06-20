@@ -1,6 +1,6 @@
 "use client"
 
-import { collection, doc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
+import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
 export const getObjects = async (type) => {
@@ -34,16 +34,39 @@ export const updateObject = async (type, updatedObject, confirm) => {
 }
 
 export const getUser = async (uid) => {
-	const document = await getDocs(query(collection(db, users), where("uid", "==", uid)));
+	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const object = document.docs.map(doc => ({ docId: doc.id, ...doc.data()}))[0];
 	console.log(`Fetched user ${object.name} with these attributes${object}`);
+	console.log(object);
 	return object;
 }
+
+//Function to get reference to user document
+export const getUserRef = async (uid) => {
+	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
+	const userRef = doc(db, "users", document.docs[0].id);
+	console.log(`Fetched user reference ${userRef}`);
+	return userRef;
+}
+
 
 export const getTournaments = async () => {
 	const documents = await getDocs(collection(db, "tournaments"));
     const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+	//Convert entrants array of references to user documents to an array of user objects for each tournament
+	for (let i = 0; i < data.length; i++) {
+		if (data[i].entrants) {
+			const entrantData = await Promise.all(data[i].entrants.map(async (entrant) => {
+				const entrantDoc = await getDoc(entrant);
+				const entrantData = {docId: entrantDoc.id, ...entrantDoc.data()};
+				return entrantData;
+			}));
+			data[i].entrants = entrantData;
+		}
+	}
+
     console.log("Fetched tournaments")
+	console.log(data);
     return data;
 }
 
@@ -109,6 +132,20 @@ export const updateUser = async () => {
 
 export const updateTournament = async (tournament) => {
 	const { docId, ...tournamentPrunedDocID } = tournament;
+	//console.log(tournamentPrunedDocID);
+	//Convert all entrant data back to references to user documents
+	if (tournamentPrunedDocID.entrants) {
+		const entrantRefs = await Promise.all(tournamentPrunedDocID.entrants.map(async (entrant) => {
+			//Only convert entrant data to reference if it is not already a reference
+			if (entrant.docId) {
+				const entrantRef = await doc(db, "users", entrant.docId);
+				return entrantRef;
+			}
+			return entrant;
+		}));
+		tournamentPrunedDocID.entrants = entrantRefs;
+	}
+	
 	const tournamentRef = doc(db, "tournaments", docId);
 	await updateDoc(tournamentRef, tournamentPrunedDocID);
 	console.log(`Updated tournament ${tournament.name}`);
