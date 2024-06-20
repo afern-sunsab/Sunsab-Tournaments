@@ -2,12 +2,15 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { getTournaments, updateTournament, getUser, getUserRef } from "../_utils/firebase_services"
+import { useUserAuth } from "../_utils/auth-context.js";
+
 
 
 export default function Page()
 {
 	const [tournaments, setTournaments] = useState([]);
-	const [users, setUsers] = useState([]);
+	const [users, setUsers] = useState(null);
+	const { user } = useUserAuth();
 
 	useEffect(() => {
 		const fetchTournaments = async () => {
@@ -15,16 +18,21 @@ export default function Page()
 			setTournaments(data);
 		}
 		fetchTournaments();
+	}, []);
+
+	//Get the user's document from the database
+	useEffect(() => {
 		const fetchUsers = async () => {
-			const data = await getUser("SjKBiNC9RMTUqx8pKSf2XQkbjk03");
+			const data = await getUser(user.uid);
 			setUsers(data);
 		}
-		fetchUsers();
-	}, []);
+		if (user)
+			fetchUsers();
+	}, [user]);
 	
 	const handleJoin = async (tournament) => {
 		//Add a reference with the user's docId to the tournament's entrants array
-		const userRef = await getUserRef("SjKBiNC9RMTUqx8pKSf2XQkbjk03");
+		const userRef = await getUserRef(user.uid);
 		tournament.entrants.push(userRef);
 		//Update the tournament in the database
 		await updateTournament(tournament);
@@ -42,10 +50,10 @@ export default function Page()
 					<p>Description: {tournament.description}</p>
 					<p>Entrants:</p>
 					<ul>
-						{tournament.entrants.map((entrant) => (
-							<li key={entrant.docID}>
+						{tournament.entrants.map((entrant, index) => (
+							<li key={index}>
 								<p>Name: {entrant.username} ({entrant.name})</p>
-								
+
 							</li>
 						))}
 					</ul>
