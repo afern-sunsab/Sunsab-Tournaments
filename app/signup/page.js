@@ -115,11 +115,11 @@ export default function Page() {
       {!user && 
         <div className="min-h-screen flex items-center justify-center relative">
           <form onSubmit={handleRegister} className="mb-8 flex flex-col items-center bg-white dark:bg-gray-500 p-8 rounded-xl drop-shadow-lg">
-            <p className="text-2xl text-header-text-0 dark:text-dark-header-text-0 mb-8">Sign Up</p>
+            <p className="text-xl text-header-text-0 font-semibold mb-5 dark:text-dark-header-text-0">Sign Up</p>
             <input
               type="email"
               value={email}
-              className="text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
+              className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               required
@@ -127,7 +127,7 @@ export default function Page() {
             <input
               type="password"
               value={password}
-              className="text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
+              className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               required
@@ -137,7 +137,7 @@ export default function Page() {
               placeholder="Username"
               value = {displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
+              className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
               required
             />
             <input
@@ -145,10 +145,10 @@ export default function Page() {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
+                className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
                 
                 />
-            <button type="submit" className=" bg-navbar-body-1 dark:bg-gray-300 text-header-text-0 active:bg-slate-600 rounded p-2">
+            <button type="submit" className="drop-shadow bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 dark:text-white dark:bg-gray-600 rounded p-2">
               Sign Up with Email
             </button>
           </form>

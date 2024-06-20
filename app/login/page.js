@@ -59,16 +59,16 @@ function handleEmailPasswordSignIn(e){
  return(
     <div className="relative min-h-screen flex items-center justify-center">
         {!user &&
-        <div dir="ltr" className="text-center bg-white dark:bg-gray-500 p-8 rounded-xl drop-shadow-lg">
-          <p className="text-xl text-header-text-0 font-semibold mb-10 dark:text-dark-header-text-0">Sign in to your account</p>
-          <form onSubmit={handleEmailPasswordSignIn} className="mb-8 flex flex-col items-center">
-            <input type="email" value={email} className="text-black border-s-4 border-slate-300 p-2 mb-4" onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-            <input type="password" value={password} className="text-black border-s-4 border-slate-300 p-2 mb-4" onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
-            <button type="submit" className=" bg-navbar-body-0 active:bg-slate-600 rounded text-white drop-shadow-lg dark:bg-gray-600 p-2">Sign In with Email</button>
+        <div dir="ltr" className="text-center bg-white dark:bg-gray-500 p-8 rounded-xl">
+          <p className="text-xl text-header-text-0 font-semibold mb-5 dark:text-dark-header-text-0">Sign in to your account</p>
+          <form onSubmit={handleEmailPasswordSignIn} className="mb-6 flex flex-col items-center">
+            <input type="email" value={email} className="bg-slate-100 text-black border-s-4 border-slate-300 p-2 mb-4" onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+            <input type="password" value={password} className="bg-slate-100 text-black border-s-4 border-slate-300 p-2 mb-4" onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+            <button type="submit" className="bg-slate-50 bg-navbar-body-0 active:bg-blue-400 active:dark:bg-blue-600 rounded text-black dark:text-white drop-shadow dark:bg-gray-600 p-2">Sign In with Email</button>
         </form>
-        <div>
-          <button onClick={() => handlePasswordReset()} className=" text-navbar-body-0 mb-2 dark:text-gray-800">Forgot Password</button>
-          <Link href='signup' className="text-slate-500  ml-6 dark:text-gray-800">Sign Up</Link>
+        <div className="drop-shadow">
+          <button onClick={() => handlePasswordReset()} className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 dark:text-white dark:bg-gray-600 rounded p-2">Forgot Password</button>
+          <Link href='signup' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5">Sign Up</Link>
         </div>
       </div>
         }
@@ -77,8 +77,7 @@ function handleEmailPasswordSignIn(e){
             <p className=" text-3xl">
             Welcome, {user.displayName}<br /> <span className="text-xl">[{user.email}]</span>
             </p>
-            <button onClick={handleSignOut} className=" bg-navbar-body-0 text-white py-4 px-6 rounded-xl drop-shadow-lg mt-8">Sign Out</button>
-            <br/>
+            <button onClick={handleSignOut} className=" bg-navbar-body-0 text-white py-4 px-6 rounded-xl drop-shadow mt-8">Sign Out</button>
         </div>
         )}
   </div>
