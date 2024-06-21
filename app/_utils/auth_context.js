@@ -2,15 +2,15 @@
 
 import { useContext, createContext, useState, useEffect } from "react";
 import {
-signInWithPopup,
-signOut,
-onAuthStateChanged,
-GithubAuthProvider,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
+	signInWithPopup,
+	signOut,
+	onAuthStateChanged,
+	GithubAuthProvider,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "./firebase";
-import {getUser} from "./user_services";
+import { getUser } from "./firebase_services";
 
 const AuthContext = createContext();
 
@@ -44,8 +44,8 @@ export const AuthContextProvider = ({ children }) => {
 	
 	useEffect(() => {
 		const fetchUser = async () => {
-		const newUser = await getUser(user);
-		setDBUser(newUser);
+			const newUser = await getUser(user.uid);
+			setDBUser(newUser);
 		};
 		fetchUser();
 	}, [user]);
@@ -59,5 +59,5 @@ export const AuthContextProvider = ({ children }) => {
 
 export const useUserAuth = () => {
 	//console.log(useContext(AuthContext));
-return useContext(AuthContext);
+	return useContext(AuthContext);
 };

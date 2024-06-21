@@ -2,11 +2,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import '../styling/createEvent.css'
+import '../../styling/createEvent.css'
 
 // Firebase
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from "../_utils/firebase";
+import { db } from "../../_utils/firebase";
 
 const ShowAllEvent = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +86,6 @@ const ShowEvent = ({ isOpen, setIsOpen, tournaments }) => {
                     <p>Game: {tournament.game}</p>
                     <p>Entrant Limit: {tournament.entrant_limit}</p>
                     <p>Completed: {tournament.completed ? 'Yes' : 'No'}</p>
-                    {/* Add more details as needed */}
                   </div>
                 ))}
               </div>
