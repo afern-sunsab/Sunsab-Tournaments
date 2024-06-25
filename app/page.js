@@ -1,13 +1,17 @@
-import Image from "next/image";
 import CreateAllEvent from "./components/CreateEvent";
 import ShowAllEvent from "./components/ShowAllEvent";
+import Navbar from "./components/navbar";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
-        <div className="flex">
-          <CreateAllEvent/>
-          <ShowAllEvent/>
-        </div>
+    <main>
+      <div>
+        <Navbar />
+      </div>
+      <div className="flex min-h-screen flex-col items-center bg-white">
+        <CreateAllEvent />
+        <ShowAllEvent />
+      </div>
     </main>
   );
 }
