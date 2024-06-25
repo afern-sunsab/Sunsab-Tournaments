@@ -149,7 +149,7 @@ const CreateEvent = ({ isOpen, setIsOpen }) => {
                 </div>
                 <div className="my-custom-input">
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="event_date"
                     value={eventDetails.event_date}
                     onChange={handleChange}
@@ -168,7 +168,7 @@ const CreateEvent = ({ isOpen, setIsOpen }) => {
                 </div>
                 <div className="my-custom-input">
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="close_date"
                     value={eventDetails.close_date}
                     onChange={handleChange}
