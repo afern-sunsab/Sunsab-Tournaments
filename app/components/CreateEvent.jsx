@@ -7,6 +7,7 @@ import '../styling/createEvent.css'
 // Firebase
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from "../_utils/firebase";
+import { createTournament } from "../_utils/firebase_services";
 
 // Date conversion function
 const dateToTimestamp = (value) => {
@@ -64,7 +65,7 @@ const CreateEvent = ({ isOpen, setIsOpen }) => {
     e.preventDefault();
 
     try {
-      const docRef = await addDoc(collection(db, 'tournaments'), {
+	  const newTournament = {
         name: eventDetails.name,
         description: eventDetails.description,
         entrant_limit: parseInt(eventDetails.entrant_limit), // Convert to number
@@ -72,8 +73,10 @@ const CreateEvent = ({ isOpen, setIsOpen }) => {
         game: eventDetails.game,
         close_date: eventDetails.close_date_timestamp || dateToTimestamp(eventDetails.close_date), // Convert to Firestore timestamp
         completed: eventDetails.completed
-      });
-      console.log('Document written with ID: ', docRef.id);
+      }
+      //console.log('Document written with ID: ', docRef.id);*/
+	  //New method of creating tournaments, features sanity checks and default values
+	  createTournament(newTournament);
       alert('Event added successfully!');
       setIsOpen(false); // Close modal after adding event
       // Reset form

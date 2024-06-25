@@ -105,10 +105,53 @@ export const getMatch = async (id) => {
 	return match;
 }
 
-export const createTournament = async (tournament) => {
+/*export const createTournament = async (tournament) => {
 	const document = await addDoc(collection(db, "tournaments"), tournament)
 	console.log(`Added new tournament ${tournament.name}`)
 	return document;
+}*/
+
+export const createTournament = async (tournament) => {
+	//Default data structure
+	const defaultTournament = {
+		name: "New Tournament",
+		game: "Game",
+		description: "Description",
+		entrant_limit: 0,
+		close_date: new Date(),
+		event_date: new Date(),
+		entrants: [],
+		bracket: null, //Potentialy deprecated
+		brackets: [], //Array of bracket references, if the system will support multiple brackets per tournament
+		completed: false
+	}
+	//Sanity checks for provided data
+	//If dates are Javascript dates, convert them to Firestore timestamps
+	if (tournament.event_date instanceof Date) {
+		tournament.event_date = dateToTimestamp(tournament.event_date);
+	}
+	if (tournament.close_date instanceof Date) {
+		tournament.close_date = dateToTimestamp(tournament.close_date);
+	}
+	//If entrants are provided, convert them to references to user documents if they are not already
+	if (tournament.entrants) {
+		const entrantRefs = await Promise.all(tournament.entrants.map(async (entrant) => {
+			//Only convert entrant data to reference if it is not already a reference
+			if (entrant.docId) {
+				const entrantRef = await doc(db, "users", entrant.docId);
+				return entrantRef;
+			}
+			return entrant;
+		}));
+		tournament.entrants = entrantRefs;
+	}
+
+	//Only update fields that are provided in the tournament object
+	const newTournament = {...defaultTournament, ...tournament};
+	const document = await addDoc(collection(db, "tournaments"), newTournament)
+	console.log(`Added new tournament ${tournament.name}`)
+	return document;
+
 }
 
 export const createBracket = async () => {
@@ -165,6 +208,7 @@ export const updatematch = async () => {
 	console.log(`Updated match ${updatedMatch.name}`);
 }
 
+//Function to convert Javascript date to Firestore timestamp
 export const dateToTimestamp = (value) => {
 	const date = new Date(value);
 	const timestamp = Timestamp.fromDate(date);
@@ -172,6 +216,7 @@ export const dateToTimestamp = (value) => {
 	return timestamp;
 }
 
+//Function to convert Firestore timestamp to Javascript date
 export const timestampToDate = (timestamp) => {
 	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
 	console.log(`Converted timestamp ${timestamp} to date ${date}`);
