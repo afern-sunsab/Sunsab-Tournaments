@@ -23,7 +23,7 @@ const CreateAllEvent = () => {
         onClick={() => setIsOpen(true)}
         className="my-custom-button"
       >
-        Open Modal
+        Create Event
       </button>
       <CreateEvent isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
