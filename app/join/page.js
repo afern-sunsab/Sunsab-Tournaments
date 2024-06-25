@@ -3,6 +3,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { getTournaments, updateTournament, getUser, getUserRef } from "../_utils/firebase_services"
 import { useUserAuth } from "../_utils/auth-context.js";
+import { joinTournament } from "../_utils/tournament_services";
 
 export default function Page() {
     const [tournaments, setTournaments] = useState([]);
@@ -27,9 +28,11 @@ export default function Page() {
     }, [user]);
     
     const handleJoin = async (tournament) => {
-        const userRef = await getUserRef(user.uid);
-        tournament.entrants.push(userRef);
-        await updateTournament(tournament);
+        //const userRef = await getUserRef(users.uid);
+        //tournament.entrants.push(userRef);
+        //await updateTournament(tournament);
+		const updatedTournament = await joinTournament(tournament, users);
+		setTournaments(tournaments.map((t) => t.docId === updatedTournament.docId ? updatedTournament : t));
     }
 
     return (
