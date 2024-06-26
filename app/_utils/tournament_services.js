@@ -21,3 +21,21 @@ export const joinTournament = async (tournament, user) => {
 	}
 	return tournament;
 }
+
+export const leaveTournament = async (tournament, user) => {
+	//If tournament somehow lacks entrants field, add it
+	if (!tournament.entrants) {
+		tournament.entrants = [];
+	}
+
+	//Check if user is already an entrant
+	const entrantIndex = tournament.entrants.findIndex(entrant => entrant.uid === user.uid);
+	if (entrantIndex !== -1) {
+		tournament.entrants.splice(entrantIndex, 1);
+		await updateTournament(tournament);
+		console.log(`User ${user.id} left tournament ${tournament.name}`);
+	} else {
+		console.log(`User ${user.id} is not an entrant in tournament ${tournament.name}`);
+	}
+	return tournament;
+}
