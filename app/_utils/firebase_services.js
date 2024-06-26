@@ -24,7 +24,7 @@ export const createObject = async (type, object) => {
 	return document;
 }
 
-export const updateObject = async (type, updatedObject, confirm) => {
+export const updateObject = async (type, updatedObject, confirm = false) => {
 	const { docId, ...updatedObjectPrunedDocID } = updatedObject;
 	const objectRef = doc(db, type, docId);
 	await updateDoc(objectRef, updatedObjectPrunedDocID);
