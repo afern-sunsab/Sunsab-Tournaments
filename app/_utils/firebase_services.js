@@ -20,7 +20,7 @@ export const getObject = async (type, id) => {
 
 export const createObject = async (type, object) => {
 	const document = await addDoc(collection(db, type), object)
-	alert(`Added new ${type} object`)
+	//alert(`Added new ${type} object`)
 	return document;
 }
 
@@ -42,6 +42,15 @@ export const getUser = async (uid) => {
 	return object;
 }
 
+//Function to get all users from the database
+//Just for testing purposes, don't actually use this
+export const getUsers = async () => {
+	const documents = await getDocs(collection(db, "users"));
+	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
+	console.log("Fetched users")
+	return data;
+}
+
 //Function to get reference to user document
 export const getUserRef = async (uid) => {
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
@@ -50,6 +59,13 @@ export const getUserRef = async (uid) => {
 	return userRef;
 }
 
+//Creates a reference to a document in the database
+//type: the type of document
+//id: the id (docId) of the document
+//Supposedly doesn't make a request to the database, but I don't know if that's true
+export function createRef(type, id) {
+	return doc(db, type, id);
+}
 
 export const getTournaments = async () => {
 	const documents = await getDocs(collection(db, "tournaments"));
