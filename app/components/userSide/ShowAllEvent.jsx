@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import '../../styling/createEvent.css'
+import { timestampToDate } from "../_utils/firebase_services";
 
 // Firebase
 import { collection, getDocs } from 'firebase/firestore';
@@ -81,8 +82,8 @@ const ShowEvent = ({ isOpen, setIsOpen, tournaments }) => {
                   <div key={tournament.id} className="my-custom-item pb-4">
                     <h4 className="text-xl text-black">TournamentName: {tournament.name}</h4>
                     <p>TournamentDescription: {tournament.description}</p>
-                    <p>Close Date: {formatDate(tournament.close_date)}</p>
-                    <p>Event Date: {formatDate(tournament.event_date)}</p>
+                    <p>Close Date: {timestampToDate(tournament.close_date)}</p>
+                    <p>Event Date: {timestampToDate(tournament.event_date)}</p>
                     <p>Game: {tournament.game}</p>
                     <p>Entrant Limit: {tournament.entrant_limit}</p>
                     <p>Completed: {tournament.completed ? 'Yes' : 'No'}</p>
