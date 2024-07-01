@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useUserAuth } from "../_utils/auth-context.js";
-import { auth } from "../_utils/firebase";
+import { useUserAuth } from "@utils/auth-context.js";
+import { auth } from "@utils/firebase";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import Link from "next/link";
-import Navbar from "../components/navbar.jsx";
+import Navbar from "@components/navbar.jsx";
 
 export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
