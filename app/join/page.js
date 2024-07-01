@@ -3,6 +3,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { getTournaments, updateTournament, getUser, getUserRef } from "../_utils/firebase_services"
 import { useUserAuth } from "../_utils/auth-context.js";
+import { joinTournament, leaveTournament } from "../_utils/tournament_services";
 
 export default function Page() {
     const [tournaments, setTournaments] = useState([]);
@@ -27,10 +28,17 @@ export default function Page() {
     }, [user]);
     
     const handleJoin = async (tournament) => {
-        const userRef = await getUserRef(user.uid);
-        tournament.entrants.push(userRef);
-        await updateTournament(tournament);
+        //const userRef = await getUserRef(users.uid);
+        //tournament.entrants.push(userRef);
+        //await updateTournament(tournament);
+		const updatedTournament = await joinTournament(tournament, users);
+		setTournaments(tournaments.map((t) => t.docId === updatedTournament.docId ? updatedTournament : t));
     }
+
+	const handleLeave = async (tournament, user) => {
+		const updatedTournament = await leaveTournament(tournament, user);
+		setTournaments(tournaments.map((t) => t.docId === updatedTournament.docId ? updatedTournament : t));
+	}
 
     return (
         <main className="w-full h-full">
@@ -47,7 +55,10 @@ export default function Page() {
                                 <div>
                                     {tournament.entrants.map((entrant, index) => (
                                         <li key={index}>
-                                            <p className="text-sm">Name: {entrant.username} ({entrant.name})</p>
+                                            <p className="text-sm">
+												<button onClick={() => handleLeave(tournament, entrant)} className="bg-blue-500 hover:bg-blue-700 text-red-400 font-bold px-1 rounded mt-2 mr-2">X</button>
+												Name: {entrant.username} ({entrant.name})
+											</p>
                                         </li>
                                     ))}
                                 </div>

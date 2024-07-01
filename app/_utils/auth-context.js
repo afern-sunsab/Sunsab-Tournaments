@@ -44,7 +44,7 @@ export const AuthContextProvider = ({ children }) => {
 	
 	useEffect(() => {
 		const fetchUser = async () => {
-			const newUser = user ? await getUser(user.uid) : null;
+			const newUser = await getUser(user.uid);
 			setDBUser(newUser);
 		};
 		fetchUser();
