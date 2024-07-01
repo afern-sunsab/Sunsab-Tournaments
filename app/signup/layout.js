@@ -1,7 +1,7 @@
 'use client';
 
 import { Inter } from "next/font/google";
-import {AuthContextProvider} from "../_utils/auth_context";
+import {AuthContextProvider} from "../_utils/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
 

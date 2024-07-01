@@ -17,7 +17,7 @@
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "react-svg-pan-zoom": "^3.12.1",
-    "styled-components": "^6.1.11",
+    "styled-components": "^4.1.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

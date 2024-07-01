@@ -235,6 +235,11 @@ export const dateToTimestamp = (value) => {
 
 //Function to convert Firestore timestamp to Javascript date
 export const timestampToDate = (timestamp) => {
+	//if timestamp is a string, just return it & yell at whoever entered a string into a timestamp field
+	if (typeof timestamp === 'string') {
+		console.log(`Timestamp is a string, returning it as is: ${timestamp}`);
+		return timestamp;
+	}
 	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
 	console.log(`Converted timestamp ${timestamp} to date ${date}`);
 	return date;

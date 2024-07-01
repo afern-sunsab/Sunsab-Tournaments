@@ -1,6 +1,5 @@
 "use client"
-import CreateAllEvent from "./components/CreateEvent";
-import ShowAllEvent from "./components/ShowAllEvent";
+import ShowAllEvent from "./components/userSide/ShowAllEvent";
 import Navbar from "./components/navbar";
 import { useRouter } from 'next/navigation';
 import CreateAllEvent from './components/adminSide/CreateEvent';

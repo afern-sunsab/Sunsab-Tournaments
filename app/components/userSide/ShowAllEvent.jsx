@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import '../../styling/createEvent.css'
-import { timestampToDate } from "../_utils/firebase_services";
+import { timestampToDate } from "../../_utils/firebase_services";
 
 // Firebase
 import { collection, getDocs } from 'firebase/firestore';
