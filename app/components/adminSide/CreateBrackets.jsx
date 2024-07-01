@@ -1,40 +1,80 @@
 "use client"
+import { useState } from 'react';
+import { ref, push, set } from 'firebase/database';
+import { rtdb } from "../../_utils/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
-import { useState } from "react";
-import '../../styling/createEvent.css'; // Assuming you have a separate stylesheet for bracketes
-
-// Firebase
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { db } from "../../_utils/firebase";
-
+import '../../styling/createEvent.css'; // Assuming you have a separate stylesheet for brackets
 
 
 const CreateBracket = ({ isOpen, setIsOpen, onBracketCreated }) => {
-  const [bracketDetails, setBracketDetails] = useState({
-    initial_matches: [],
-    matches:  [],
-    style: ''
-  });
+  const [numParticipants, setNumParticipants] = useState(0);
+  const [matches, setMatches] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setBracketDetails(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+  const handleChangeNumParticipants = (e) => {
+    const { value } = e.target;
+    setNumParticipants(parseInt(value));
+  };
+
+  const generateBracket = () => {
+    // Validate number of participants is a power of 2
+    if (!Number.isInteger(Math.log2(numParticipants))) {
+      alert('Number of participants must be a power of 2 for single elimination bracket.');
+      return;
+    }
+
+    const newMatches = [];
+    let matchIdCounter = 1;
+
+    // Generate matches for each round
+    for (let round = 1; round <= Math.log2(numParticipants); round++) {
+      const numMatches = numParticipants / Math.pow(2, round);
+
+      for (let matchIndex = 1; matchIndex <= numMatches; matchIndex++) {
+        const match = {
+          id: matchIdCounter,
+          name: round === Math.log2(numParticipants) ? "Final - Match" : `Round ${round} - Match ${matchIndex}`,
+          nextMatchId: null, // Initially set nextMatchId to null
+          nextLooserMatchId: null,
+          tournamentRoundText: round.toString(),
+          startTime: '',
+          state: '',
+          participants: [{}, {}] // Initialize with empty participants
+        };
+
+        newMatches.push(match);
+        matchIdCounter++;
+      }
+    }
+
+    // Link matches to their subsequent rounds
+    for (let i = 0; i < newMatches.length; i++) {
+      const match = newMatches[i];
+      const nextRound = parseInt(match.tournamentRoundText) + 1;
+      if (nextRound <= Math.log2(numParticipants)) {
+        const nextRoundMatches = newMatches.filter(m => m.tournamentRoundText === nextRound.toString());
+        
+        // Set nextMatchId for all matches in round 2 to the last match in round 3
+        match.nextMatchId = nextRoundMatches[nextRoundMatches.length - 1]?.id || null;
+
+        // Set nextLooserMatchId for even-indexed matches (second match in a pair)
+        if (i % 2 === 1) {
+          match.nextLooserMatchId = nextRoundMatches[nextRoundMatches.length - 2]?.id || null;
+        }
+      }
+    }
+
+    setMatches(newMatches);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const docRef = await addDoc(collection(db, 'brackets'), {
-        initial_matches: bracketDetails.initial_matches,
-        matches: bracketDetails.matches,
-        style: bracketDetails.style
-      });
-      console.log('Bracket document written with ID: ', docRef.id);
-      onBracketCreated(docRef.id); // Pass bracket ID to parent component
+      const newBracketRef = push(ref(rtdb, 'brackets'));
+      const newBracketId = newBracketRef.key;
+      await set(newBracketRef, { matches });
+      console.log('Bracket document written with ID:', newBracketId);
+      onBracketCreated(newBracketId); // Pass bracket ID to parent component
       alert('Bracket created successfully!');
       setIsOpen(false); // Close the bracket modal after creation
     } catch (error) {
@@ -69,34 +109,62 @@ const CreateBracket = ({ isOpen, setIsOpen, onBracketCreated }) => {
               <form onSubmit={handleSubmit}>
                 <div className="my-custom-input">
                   <input
-                    type="text"
-                    name="initial_matches"
-                    value={bracketDetails.initial_matches}
-                    onChange={handleChange}
-                    placeholder="Initial Matches"
+                    type="number"
+                    name="numParticipants"
+                    value={numParticipants}
+                    onChange={handleChangeNumParticipants}
+                    placeholder="Number of Participants (must be a power of 2)"
                     required
                   />
                 </div>
-                <div className="my-custom-input">
-                  <input
-                    type="text"
-                    name="matches"
-                    value={bracketDetails.matches}
-                    onChange={handleChange}
-                    placeholder="Matches"
-                    required
-                  />
-                </div>
-                <div className="my-custom-input">
-                  <input
-                    type="text"
-                    name="style"
-                    value={bracketDetails.style}
-                    onChange={handleChange}
-                    placeholder="Bracket Style"
-                    required
-                  />
-                </div>
+                <button type="button" onClick={generateBracket}>
+                  Generate Bracket
+                </button>
+                {matches.length > 0 && (
+                  <div>
+                    {matches.map((match, matchIndex) => (
+                      <div key={`match${match.id}`}>
+                        <h5>{`${match.name}`}</h5>
+                        <div className="my-custom-input">
+                          <input
+                            type="text"
+                            name="nextMatchId"
+                            value={match.nextMatchId || ''}
+                            readOnly
+                            placeholder="Next Match ID"
+                          />
+                        </div>
+                        <div className="my-custom-input">
+                          <input
+                            type="text"
+                            name="nextLooserMatchId"
+                            value={match.nextLooserMatchId || ''}
+                            readOnly
+                            placeholder="Next Looser Match ID"
+                          />
+                        </div>
+                        <div className="my-custom-input">
+                          <input
+                            type="text"
+                            name="tournamentRoundText"
+                            value={match.tournamentRoundText}
+                            readOnly
+                            placeholder="Tournament Round Text"
+                          />
+                        </div>
+                        <div className="my-custom-input">
+                          <input
+                            type="text"
+                            name="state"
+                            value={match.state}
+                            readOnly
+                            placeholder="State"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="my-flex-container">
                   <button type="submit" className="my-exit">
                     Create Bracket

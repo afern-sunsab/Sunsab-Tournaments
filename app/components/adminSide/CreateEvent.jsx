@@ -1,50 +1,95 @@
 "use client"
 import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import '../../styling/createEvent.css'
 
 // Firebase
 import { collection, addDoc, Timestamp, doc } from 'firebase/firestore';
-import { db } from "../../_utils/firebase";
-
+import { db, rtdb } from "../../_utils/firebase";
+import { ref, onValue } from 'firebase/database';
 import CreateBracket from './CreateBrackets'
+import SingleElimination from "./singleElimination";
 // Date conversion function
 const CreateAllEvent = () => {
   const [isOpenCreateBracket, setIsOpenCreateBracket] = useState(false);
-  const [isOpenCreateTournament, setIsOpenCreateTournament] = useState(false); // State for tournament modal
+  const [isOpenCreateTournament, setIsOpenCreateTournament] = useState(false);
   const [eventDetails, setEventDetails] = useState({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     entrant_limit: 0,
-    event_date: '',
-    game: '',
-    close_date: '',
+    event_date: "",
+    game: "",
+    close_date: "",
     completed: false,
-    bracketId: null
+    bracketId: null,
   });
+  const [bracketData, setBracketData] = useState([]); // State to store fetched bracket data
+
+  // Function to fetch bracket data from Firebase
+  const fetchBracketData = (bracketId) => {
+    const bracketRef = ref(rtdb, `brackets/${bracketId}/matches`);
+
+    onValue(bracketRef, (snapshot) => {
+      const matchesData = snapshot.val();
+      if (matchesData) {
+        const matchesArray = Object.keys(matchesData).map(key => {
+          const matchData = matchesData[key];
+          return {
+            id: matchData.id || '',
+            name: matchData.name || '',
+            nextMatchId: matchData.nextMatchId || null,
+            nextLooserMatchId: matchData.nextLooserMatchId || null,
+            tournamentRoundText: matchData.tournamentRoundText || '',
+            startTime: matchData.startTime || '',
+            state: matchData.state || '',
+            participants: matchData.participants || [{}, {}],
+          };
+        });
+
+        // Sort matches by tournamentRoundText (assuming tournamentRoundText is a number)
+        matchesArray.sort((a, b) => parseInt(a.tournamentRoundText) - parseInt(b.tournamentRoundText));
+
+        console.log("Transformed Matches Array:", matchesArray);
+        setBracketData(matchesArray);
+      } else {
+        console.log("No matches found for bracket:", bracketId);
+      }
+    }, {
+      onlyOnce: true
+    });
+  };
+
+  // Effect to fetch bracket data once bracketId changes
+  useEffect(() => {
+    if (eventDetails.bracketId) {
+      fetchBracketData(eventDetails.bracketId);
+    }
+  }, [eventDetails.bracketId]);
 
   const handleBracketCreated = (bracketId) => {
-    console.log('Bracket created with ID:', bracketId);
-    setEventDetails(prevState => ({
+    console.log("Bracket created with ID:", bracketId);
+    setEventDetails((prevState) => ({
       ...prevState,
-      bracketId: bracketId
+      bracketId: bracketId,
     }));
     setIsOpenCreateBracket(false);
-    setIsOpenCreateTournament(true); // Open tournament modal after bracket creation
-    alert('Bracket created successfully! You can now proceed to create a tournament.');
+    setIsOpenCreateTournament(true);
+    alert(
+      "Bracket created successfully! You can now proceed to create a tournament."
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!eventDetails.bracketId) {
-      alert('Please create a bracket first.');
+      alert("Please create a bracket first.");
       return;
     }
 
     try {
-      const docRef = await addDoc(collection(db, 'tournaments'), {
+      const docRef = await addDoc(collection(db, "tournaments"), {
         name: eventDetails.name,
         description: eventDetails.description,
         entrant_limit: parseInt(eventDetails.entrant_limit),
@@ -52,26 +97,27 @@ const CreateAllEvent = () => {
         game: eventDetails.game,
         close_date: eventDetails.close_date,
         completed: eventDetails.completed,
-        bracket: doc(db, `brackets/${eventDetails.bracketId}`)
+        bracketId: eventDetails.bracketId,
       });
-      console.log('Tournament document written with ID: ', docRef.id);
-      alert('Event added successfully!');
+      console.log("Tournament document written with ID: ", docRef.id);
+      alert("Event added successfully!");
       setEventDetails({
-        name: '',
-        description: '',
+        name: "",
+        description: "",
         entrant_limit: 0,
-        event_date: '',
-        game: '',
-        close_date: '',
+        event_date: "",
+        game: "",
+        close_date: "",
         completed: false,
-        bracketId: null
+        bracketId: null,
       });
       setIsOpenCreateTournament(false);
     } catch (error) {
-      console.error('Error adding tournament document: ', error);
-      alert('Error adding event. Please try again.');
+      console.error("Error adding tournament document: ", error);
+      alert("Error adding event. Please try again.");
     }
   };
+
 
   return (
     <div className="layoutCustom">
@@ -193,6 +239,7 @@ const CreateAllEvent = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <SingleElimination bracketData={bracketData} />
     </div>
   );
 };
