@@ -46,7 +46,7 @@ export const initializeMatches = async (bracket, entrants) => {
 	};
 	// Create matches
 	let matchid = 1;
-	for (let i = 0; i < entrantsCopy.length; i += 2) {
+	for (let i = 0; i < entrantsCopy.length - 2; i += 2) {
 		const match = {
 			player1: {
 				score: 0,
@@ -99,6 +99,7 @@ export const initializeMatches = async (bracket, entrants) => {
 		};
 		//matches.round2.push({ ["match1"]: match });
 		matches.round2["match1"] = match;
+		matchesReturn.round2["match1"] = matchReturn;
 	}
 	// Update the bracket with the new matches
 	bracket.matches = matches;
