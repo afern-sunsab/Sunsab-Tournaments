@@ -52,7 +52,7 @@ export default function Page() {
 				  <div>{roundName}</div>
 				  {Object.entries(round).map(([matchName, match], index) => (
 					<div key={index}>
-					  {match.player1.user.username || "Undefined Player 1"} vs {match.player2.user.username || "Undefined Player 2"}
+					  {match.player1.user ? match.player1.user.username : "Undefined Player 1"} vs {match.player2.user ? match.player2.user.username : "Undefined Player 2"}
 					</div>
 				  ))}
 				</div>

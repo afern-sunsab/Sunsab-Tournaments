@@ -47,7 +47,8 @@ export const AuthContextProvider = ({ children }) => {
 			const newUser = await getUser(user.uid);
 			setDBUser(newUser);
 		};
-		fetchUser();
+		if (user)
+			fetchUser();
 	}, [user]);
 	
 	return (
