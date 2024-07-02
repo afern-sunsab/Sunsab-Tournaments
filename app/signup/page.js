@@ -12,6 +12,7 @@ import { useUserAuth } from "../_utils/auth-context.js";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 import Navbar from "../components/navbar.jsx";
+import { createUser } from "@utils/user_services";
 
 //Change for user
 //Add items
@@ -78,21 +79,21 @@ export default function Page() {
 
   //Add user to database (user collection in Cloud Firestore)
   async function addUserData(user) {
-    console.log("Entered addUserData.");
+    /*console.log("Entered addUserData.");
     console.log(user.displayName);
     console.log(user.uid);
-    console.log(user.email);
+    console.log(user.email);*/
 
     const userDoc = {
       username: user.displayName,
-      role: "customer",
-
       uid: user.uid,
       email: user.email,
       name: name,
-
-      favorites: { cats: [] },
     };
+
+	//console.log("SIGNUP: Adding user to database.");
+	await createUser(userDoc);
+	//console.log("SIGNUP: User added to database.");
 
     /*
        const userDoc = {
@@ -103,11 +104,11 @@ export default function Page() {
                 name: "anthony",
         };
         */
-    console.log("Adding user to database.");
+    /*console.log("Adding user to database.");
 
     const docRef = await addUser(userDoc);
     console.log(docRef);
-    console.log("User added to database.");
+    console.log("User added to database.");*/
   }
 
   function handleRedirect() {
@@ -116,7 +117,6 @@ export default function Page() {
 
   return (
     <div>
-      <Navbar />
       <div>
         {!user && (
           <div className="min-h-screen flex items-center justify-center relative">

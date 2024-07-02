@@ -1,5 +1,6 @@
 "use client"
-
+//NOTE: Avoid using functions from this file aside from get/create/updateObject functions, getUserRef, and dateToTimestamp/timestampToDate
+//Preference goes to functions in user/bracket/tournament_services, which will be more modular and easier to use
 import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
@@ -37,8 +38,8 @@ export const getUser = async (uid) => {
 	console.log(`Fetching user ${uid}`);
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const object = document.docs.map(doc => ({ docId: doc.id, ...doc.data()}))[0];
-	console.log(`Fetched user ${object.name} with these attributes${object}`);
-	console.log(object);
+	//console.log(`Fetched user ${object.name} with these attributes${object}`);
+	//console.log(object);
 	return object;
 }
 
