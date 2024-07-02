@@ -7,6 +7,7 @@ export default function Navbar() {
         <Link href='/' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Home </Link>
         <Link href='login' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Login </Link>
         <Link href='signup' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Sign Up </Link>
+        <Link href='join' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Join </Link>
         </nav>
     );
     }

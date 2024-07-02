@@ -115,8 +115,6 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <Navbar />
       <div>
         {!user && (
           <div className="min-h-screen flex items-center justify-center relative">
@@ -182,6 +180,5 @@ export default function Page() {
           </div>
         )}
       </div>
-    </div>
   );
 }
