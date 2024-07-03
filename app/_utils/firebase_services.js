@@ -4,8 +4,14 @@
 import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
-export const getObjects = async (type) => {
-	const documents = await getDocs(collection(db, type));
+//Basic Firestore functions, use these with other services. Try to avoid using these directly in components
+export const getObjects = async (type, query = null) => {
+	
+	let documents = [];
+	if (query) 
+		documents = await getDocs(query(collection(db, type), query));
+	else
+		documents = await getDocs(collection(db, type));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
 	console.log(`Fetched ${type} objects`)
 	return data;
@@ -34,6 +40,51 @@ export const updateObject = async (type, updatedObject, confirm = false) => {
 	}
 }
 
+//-------------
+//Firestore-specific functions
+//It's okay to call these directly in components, but try to use the functions in user/bracket/tournament_services instead
+//Function to convert Javascript date to Firestore timestamp
+export const dateToTimestamp = (value) => {
+	const date = new Date(value);
+	const timestamp = Timestamp.fromDate(date);
+	console.log(`Converted date ${date} to timestamp ${timestamp}`)
+	return timestamp;
+}
+
+//Function to convert Firestore timestamp to Javascript date
+export const timestampToDate = (timestamp) => {
+	//if timestamp is a string, just return it & yell at whoever entered a string into a timestamp field
+	if (typeof timestamp === 'string') {
+		console.log(`Timestamp is a string, returning it as is: ${timestamp}`);
+		return timestamp;
+	}
+	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
+	console.log(`Converted timestamp ${timestamp} to date ${date}`);
+	return date;
+}
+
+//Function to convert user object or array of user objects to reference to user document
+export const getUserRefs = async (user) => {
+	if (Array.isArray(user)) {
+		//Only convert entrant data to reference if it is not already a reference
+		const userRefs = await Promise.all(user.map(async (user) => {
+			if (user.docId) {
+				const userRef = await doc(db, "users", user.docId);
+				return userRef;
+			}
+			return user;
+		}));
+		return userRefs;
+	}
+	else if (user.docId)
+		return doc(db, "users", user.docId);
+	return user;
+
+}
+
+//----------------
+//Deprecated functions
+//These interact directly with the database, but only functions in services will be maintained and updated
 export const getUser = async (uid) => {
 	console.log(`Fetching user ${uid}`);
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
@@ -53,6 +104,8 @@ export const getUsers = async () => {
 }
 
 //Function to get reference to user document
+//Technically not necessary, but it's here for consistency
+//getUserRefs is the preferred function to use
 export const getUserRef = async (uid) => {
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const userRef = doc(db, "users", document.docs[0].id);
@@ -224,24 +277,4 @@ export const updatematch = async () => {
 	const matchRef = doc(db, "matches", docId);
 	await updateDoc(matchRef, updatedMatchPrunedDocID);
 	console.log(`Updated match ${updatedMatch.name}`);
-}
-
-//Function to convert Javascript date to Firestore timestamp
-export const dateToTimestamp = (value) => {
-	const date = new Date(value);
-	const timestamp = Timestamp.fromDate(date);
-	console.log(`Converted date ${date} to timestamp ${timestamp}`)
-	return timestamp;
-}
-
-//Function to convert Firestore timestamp to Javascript date
-export const timestampToDate = (timestamp) => {
-	//if timestamp is a string, just return it & yell at whoever entered a string into a timestamp field
-	if (typeof timestamp === 'string') {
-		console.log(`Timestamp is a string, returning it as is: ${timestamp}`);
-		return timestamp;
-	}
-	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
-	console.log(`Converted timestamp ${timestamp} to date ${date}`);
-	return date;
 }

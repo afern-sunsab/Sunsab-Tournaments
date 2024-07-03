@@ -1,5 +1,6 @@
-import { updateTournament, getTournament, getUserRef, getUser } from "./firebase_services";
-import {getObject, getObjects, createObject, updateObject} from "./firebase_services";
+//import { updateTournament, getTournament, getUserRefs, getUser } from "./firebase_services";
+import { get } from "firebase/database";
+import {getObject, getObjects, createObject, updateObject, createRef, getUserRefs} from "./firebase_services";
 
 const defaultTournament = {
 	name: "New Tournament",
@@ -26,10 +27,14 @@ export const createTournament = async (tournament) => {
 }
 
 export const updateTournament = async (tournament) => {
-	const { docId, ...tournamentPrunedDocID } = tournament;
+	//const { docId, ...tournamentPrunedDocID } = tournament;
 
 	//Merge default data with provided data, in case structure has changed
-	const updatedTournament = { ...defaultTournament, ...tournamentPrunedDocID };
+	//const updatedTournament = { ...defaultTournament, ...tournamentPrunedDocID };
+	const updatedTournament = { ...defaultTournament, ...tournament };
+
+	//Convert entrants array to array of user references
+	updatedTournament.entrants = await getUserRefs(updatedTournament.entrants);
 	await updateObject("tournaments", updatedTournament);
 }
 
@@ -48,9 +53,9 @@ export const joinTournament = async (tournament, user) => {
 	if (entrantIndex === -1) {
 		tournament.entrants.push(user);
 		await updateTournament(tournament);
-		console.log(`User ${user.id} joined tournament ${tournament.name}`);
+		console.log(`User ${user.docId} joined tournament ${tournament.name}`);
 	} else {
-		console.log(`User ${user.id} is already an entrant in tournament ${tournament.name}`);
+		console.log(`User ${user.docId} is already an entrant in tournament ${tournament.name}`);
 	}
 	return tournament;
 }

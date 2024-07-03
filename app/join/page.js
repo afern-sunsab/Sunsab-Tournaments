@@ -31,7 +31,7 @@ export default function Page() {
         //const userRef = await getUserRef(users.uid);
         //tournament.entrants.push(userRef);
         //await updateTournament(tournament);
-		const updatedTournament = await joinTournament(tournament, users);
+		const updatedTournament = await joinTournament(tournament, user);
 		setTournaments(tournaments.map((t) => t.docId === updatedTournament.docId ? updatedTournament : t));
     }
 

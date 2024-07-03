@@ -1,4 +1,4 @@
-import { createObject, updateObject, getUserRef, createRef } from "./firebase_services";
+import { createObject, updateObject, getUserRefs, createRef } from "./firebase_services";
 
 const defaultBracket = {
 	name: "",
