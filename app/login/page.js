@@ -9,7 +9,6 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import Link from "next/link";
-import Navbar from "@components/navbar.jsx";
 
 export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
@@ -63,7 +62,6 @@ export default function Page() {
 
   return (
     <div>
-      <Navbar />
       <div className="relative min-h-screen flex items-center justify-center">
         {!user && (
           <div
