@@ -33,13 +33,13 @@ export default function Page() {
 		setTournament((prevTournament) => ({ ...prevTournament, [name]: date }))
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const converted_close_date = new Date(tournament.close_date);
 		const converted_event_date = new Date(tournament.event_date);
 		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date }
-		console.log(newTournament)
-		createTournament(newTournament);
+		const document = await createTournament(newTournament);
+		window.location.href = `/create/${document.id}`;
 	}
 
 	return(

@@ -88,10 +88,15 @@ export const getTournaments = async () => {
     return data;
 }
 
+// export const getTournament = async (id) => {
+// 	const document = await getDocs(query(collection(db, "tournaments"), where("id", "==", id)));
+// 	const tournament = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
+// 	console.log(`Fetched tournament ${tournament.name}`)
+// 	return tournament;
+// }
+
 export const getTournament = async (id) => {
-	const document = await getDocs(query(collection(db, "tournaments"), where("id", "==", id)));
-	const tournament = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
-	console.log(`Fetched tournament ${tournament.name}`)
+	const tournament = {docId: id, ...(await getDoc(doc(db, 'tournaments', id))).data()}
 	return tournament;
 }
 
