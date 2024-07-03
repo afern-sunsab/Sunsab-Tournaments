@@ -5,11 +5,15 @@ import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Times
 import { db } from "../_utils/firebase";
 
 //Basic Firestore functions, use these with other services. Try to avoid using these directly in components
-export const getObjects = async (type, query = null) => {
+//Optionally, queries can be passed to getObjects to filter results
+//Query data should be an array with the following format: [field, operator, value]
+//Example: ["name", "==", "John Doe"]
+//Example: ["age", ">", 21]
+export const getObjects = async (type, queryData = null) => {
 	
 	let documents = [];
 	if (query) 
-		documents = await getDocs(query(collection(db, type), query));
+		documents = await getDocs(query(collection(db, type), where(queryData[0], queryData[1], queryData[2])));
 	else
 		documents = await getDocs(collection(db, type));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
