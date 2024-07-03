@@ -1,4 +1,37 @@
 import { updateTournament, getTournament, getUserRef, getUser } from "./firebase_services";
+import {getObject, getObjects, createObject, updateObject} from "./firebase_services";
+
+const defaultTournament = {
+	name: "New Tournament",
+	game: "Game",
+	description: "Description",
+	entrant_limit: 0,
+	close_date: new Date(),
+	event_date: new Date(),
+	entrants: [], //Array of user references
+	brackets: [], //Array of bracket references
+	completed: false
+}
+
+export const createTournament = async (tournament) => {
+	//Merge default data with provided data
+	const newTournament = { ...defaultTournament, ...tournament };
+
+	//Create the tournament document
+	const document = await createObject("tournaments", newTournament);
+
+	//Add the document ID to the tournament object
+	newTournament.docId = document.id;
+	return newTournament;
+}
+
+export const updateTournament = async (tournament) => {
+	const { docId, ...tournamentPrunedDocID } = tournament;
+
+	//Merge default data with provided data, in case structure has changed
+	const updatedTournament = { ...defaultTournament, ...tournamentPrunedDocID };
+	await updateObject("tournaments", updatedTournament);
+}
 
 //Adds a user to the entrants array of a tournament
 //"tournament" is a JavaScript object representing a tournament document

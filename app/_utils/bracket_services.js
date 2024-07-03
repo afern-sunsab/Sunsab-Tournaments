@@ -1,14 +1,16 @@
 import { createObject, updateObject, getUserRef, createRef } from "./firebase_services";
 
+const defaultBracket = {
+	name: "",
+	style: "",
+	matches: [],
+};
+
 // Function to create a new bracket
 // "bracket" is a JavaScript object representing a bracket document
 export const createBracket = async (bracket) => {
 	//Default data structure for a bracket
-	const defaultBracket = {
-		name: "",
-		style: "",
-		matches: [],
-	};
+	
 	// Merge default data with provided data
 	const newBracket = { ...defaultBracket, ...bracket };
 	// Create the bracket
@@ -22,7 +24,10 @@ export const createBracket = async (bracket) => {
 // "bracket" is a JavaScript object representing a bracket document
 export const updateBracket = async (bracket) => {
 	const { docId, ...bracketPrunedDocID } = bracket;
-	await updateObject("brackets", bracket);
+
+	//Merge default data with provided data, in case structure has changed
+	const updatedBracket = { ...defaultBracket, ...bracketPrunedDocID };
+	await updateObject("brackets", updatedBracket);
 }
 
 // Function to initialize matches

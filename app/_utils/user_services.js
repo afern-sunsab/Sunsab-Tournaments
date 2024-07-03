@@ -1,17 +1,17 @@
 import { updateTournament, getTournament, getUserRef, getUser } from "./firebase_services";
 import {getObject, getObjects, createObject, updateObject} from "./firebase_services";
 
+//Default user data structure
+const defaultUser = {
+	username: "username",
+	name: "name",
+	email: "",
+	uid: "",
+	pronouns: "",
+};
 
 export const createUser = async (user) => {
-	//Default user data structure
-	const defaultUser = {
-		username: "username",
-		name: "name",
-		email: "",
-		uid: "",
-		pronouns: "",
-	};
-
+	
 	//Merge default data with provided data
 	const newUser = { ...defaultUser, ...user };
 
@@ -23,3 +23,10 @@ export const createUser = async (user) => {
 	return newUser;
 }
 
+export const updateUser = async (user) => {
+	const { docId, ...userPrunedDocID } = user;
+
+	//Merge default data with provided data, in case structure has changed
+	const updatedUser = { ...defaultUser, ...userPrunedDocID };
+	await updateObject("users", updatedUser);
+}
