@@ -12,7 +12,7 @@ import { db } from "../_utils/firebase";
 export const getObjects = async (type, queryData = null) => {
 	
 	let documents = [];
-	if (query) 
+	if (queryData) 
 		documents = await getDocs(query(collection(db, type), where(queryData[0], queryData[1], queryData[2])));
 	else
 		documents = await getDocs(collection(db, type));
