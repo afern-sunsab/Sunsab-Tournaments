@@ -1,4 +1,7 @@
 import { createObject, updateObject, getUserRefs, createRef } from "./firebase_services";
+//RTDB functions
+import { getDatabase, ref, set, get, child, update } from "firebase/database";
+import { rtdb } from "./firebase";
 
 const defaultBracket = {
 	name: "",
@@ -115,4 +118,66 @@ export const initializeMatches = async (bracket, entrants) => {
 	//This is why I hate references
 	bracket.matches = matchesReturn;
 	return bracket;
+}
+
+//Firebase-specific functions for transfering brackets to and from the database and the rtdb
+export const sendBracketToRTDB = async (bracket) => {
+	//Create a bracket structure in the RTDB
+	//Uses the same structure as the Firestore bracket
+	//Uses the bracket's docId as the key
+
+	const bracketRef = ref(rtdb, `brackets/${bracket.docId}`);
+	///But first, check if the bracket is already in the RTDB
+	/*const bracketSnapshot = await get(child(bracketRef));
+	const bracketData = bracketSnapshot.val();
+	if (bracketData)
+	{
+		console.log("Bracket already exists in RTDB. Cancelling.");
+		return;
+	}*/
+	//Next, parse all players to convert references into docIDs
+	//Firebase RTDB doesn't like complex objects, so we'll store it as a string ("users/[docId]")
+	const bracketCopy = { ...bracket };
+	console.log("Bracket copy:")
+	console.log(bracketCopy);
+	/*bracketCopy.matches.map((round) => {
+		round.map((match) => {
+			match.player1.user = match.player1.user.id;
+			match.player2.user = match.player2.user.id;
+		});
+	});*/
+	Object.keys(bracketCopy.matches).map((round) => {
+		Object.keys(bracketCopy.matches[round]).map((match) => {
+			if (bracketCopy.matches[round][match].player1.user)
+			{
+				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id;
+			}
+			if (bracketCopy.matches[round][match].player2.user)
+			{
+				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id;
+			}
+		});
+	});
+	
+	await set(bracketRef, bracket);
+}
+
+export const sendBracketToFirestore = async (bracket) => {
+	//Copy the live bracket data into the permanent document
+	//Then delete the live bracket (RIP)
+	const bracketRef = ref(getDatabase(), `brackets/${bracket.docId}`);
+	const bracketSnapshot = await get(child(bracketRef));
+	const bracketData = bracketSnapshot.val();
+	if (bracketData)
+	{
+		await updateBracket(bracketData);
+		console
+	}
+	else
+	{
+		console.log("No bracket data found in RTDB for bracket " + bracket.docId);
+	}
+
+	//Delete the live bracket
+	await update(bracketRef, null);
 }
