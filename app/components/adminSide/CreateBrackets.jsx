@@ -106,7 +106,7 @@ const CreateBracket = ({ isOpen, setIsOpen, onBracketCreated }) => {
               <h3 className="my-custom-text1">
                 Create Bracket
               </h3>
-              <form onSubmit={handleSubmit}>
+              <form className='w-full overflow-y-auto' onSubmit={handleSubmit}>
                 <div className="my-custom-input">
                   <input
                     type="number"
@@ -126,15 +126,76 @@ const CreateBracket = ({ isOpen, setIsOpen, onBracketCreated }) => {
                       <div key={`match${match.id}`}>
                         <h5>{`${match.name}`}</h5>
                         <div className="my-custom-input">
-                          <input
-                            type="text"
-                            name="nextMatchId"
-                            value={match.nextMatchId || ''}
-                            readOnly
-                            placeholder="Next Match ID"
-                          />
+                          <div className='flex items-center flex-row'>
+                            <p className='mr-5'>State:</p>
+                            <select
+                              id={`state-${match.id}`}
+                              name="state"
+                              value={match.state}
+                              onChange={(e) => {
+                                const updatedMatches = [...matches];
+                                updatedMatches[matchIndex] = {
+                                  ...updatedMatches[matchIndex],
+                                  state: e.target.value,
+                                };
+                                setMatches(updatedMatches);
+                              }}
+                            >
+                              <option value="" disabled hidden>Select State</option>
+                              <option value="NO_SHOW">NO_SHOW</option>
+                              <option value="WALK_OVER">WALK_OVER</option>
+                              <option value="NO_PARTY">NO_PARTY</option>
+                              <option value="DONE">DONE</option>
+                              <option value="SCORE_DONE">SCORE_DONE</option>
+                            </select>
+                          </div>
                         </div>
                         <div className="my-custom-input">
+                          <div className='flex items-center flex-row'>
+                            <p className='mr-5'>StartTime:</p>
+                            <input
+                              type="datetime-local"
+                              id={`startTime-${match.id}`}
+                              name="startTime"
+                              value={match.startTime}
+                              onChange={(e) => {
+                                const updatedMatches = [...matches];
+                                updatedMatches[matchIndex] = {
+                                  ...updatedMatches[matchIndex],
+                                  startTime: e.target.value,
+                                };
+                                setMatches(updatedMatches);
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="my-custom-input">
+                          <div className='flex items-center flex-row'>
+                            <p className='mr-5'>BracketID:</p>
+                            <input
+                              type="text"
+                              name="nextMatchId"
+                              value={match.id || ''}
+                              readOnly
+                              placeholder="Next Match ID"
+                            />
+                          </div>
+                        </div>
+                        <div className="my-custom-input">
+                          <div className='flex items-center flex-row'>
+                            <p className='mr-5'>nextMatchId:</p>
+                            <input
+                              type="text"
+                              name="nextMatchId"
+                              value={match.nextMatchId !== null ? match.nextMatchId : 'Null'}
+                              readOnly
+                              placeholder="Next Match ID"
+                            />
+                          </div>
+                        </div>
+                        <div className="my-custom-input">
+                          <div className='flex items-center flex-row'>
+                          <p className='mr-5'>NextLoserMatchID:</p>
                           <input
                             type="text"
                             name="nextLooserMatchId"
@@ -142,25 +203,22 @@ const CreateBracket = ({ isOpen, setIsOpen, onBracketCreated }) => {
                             readOnly
                             placeholder="Next Looser Match ID"
                           />
+                          </div>
                         </div>
+          
                         <div className="my-custom-input">
-                          <input
-                            type="text"
-                            name="tournamentRoundText"
-                            value={match.tournamentRoundText}
-                            readOnly
-                            placeholder="Tournament Round Text"
-                          />
+                          <div className='flex items-center flex-row'>
+                            <p className='mr-5'>TournamentRoundNumber:</p>
+                            <input
+                              type="text"
+                              name="tournamentRoundText"
+                              value={match.tournamentRoundText}
+                              readOnly
+                              placeholder="Tournament Round Text"
+                            />
+                          </div>
                         </div>
-                        <div className="my-custom-input">
-                          <input
-                            type="text"
-                            name="state"
-                            value={match.state}
-                            readOnly
-                            placeholder="State"
-                          />
-                        </div>
+                        
                       </div>
                     ))}
                   </div>

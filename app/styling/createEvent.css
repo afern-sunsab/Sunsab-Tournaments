@@ -46,11 +46,10 @@
     padding: 1.5rem;
     border-radius: 0.5rem;
     width: 100%;
-    max-width: 32rem;
+    max-width: 35rem;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05); /* Tailwind's shadow-xl equivalent */
     cursor: default;
     position: relative;
-    overflow: hidden;
 }
 
 .my-custom-text {
@@ -115,7 +114,8 @@
     margin-bottom: 1rem;
     color: black;
   }
-  
+
+  .my-custom-input select,
   .my-custom-input input,
   .my-custom-input textarea {
     width: 100%;
