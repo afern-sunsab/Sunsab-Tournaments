@@ -91,7 +91,7 @@ export default function Page() {
               Join
             </button>
             <Link
-              href={`/tournament/${tournament.id}`}
+              href={`/tournaments/${tournament.docId}`}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 ml-2"
             >
               View tournament{" "}
