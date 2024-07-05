@@ -1,9 +1,8 @@
 "use client"
-import ShowAllEvent from "./components/userSide/ShowAllEvent";
-import Navbar from "./components/navbar";
 import { useRouter } from 'next/navigation';
 import CreateAllEvent from './components/adminSide/CreateEvent';
-import SingleElimination from './components/adminSide/singleElimination';
+import ShowAllEvent from "./components/userSide/ShowAllEvent";
+import EventsHeader from './homepage/Events-Header';
 
 export default function Home() {
   const router = useRouter();
@@ -15,9 +14,7 @@ export default function Home() {
   return (
     <main className="flex  flex-col items-center justify-between p-24 bg-white">
       <div>
-        <Navbar />
-      </div>
-      <div>
+        <EventsHeader/>
         <CreateAllEvent />
         <ShowAllEvent />
       </div>

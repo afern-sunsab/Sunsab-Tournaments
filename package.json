@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@g-loot/react-tournament-brackets": "^1.0.31-rc",
+    "@mui/icons-material": "^5.15.21",
+    "@mui/material": "^5.15.21",
     "firebase": "^10.12.2",
     "framer-motion": "^11.2.10",
     "next": "14.2.4",
