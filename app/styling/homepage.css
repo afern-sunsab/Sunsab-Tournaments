@@ -5,10 +5,11 @@
     flex-direction: column;
     justify-content: center;  
     padding: 20px;
+    color: black;
   }
   
-  .description {
+  .description-section {
     max-width: 800px;  
-    margin: auto;  
+    margin: auto 0;  
+    text-align: left;  
   }
-  
