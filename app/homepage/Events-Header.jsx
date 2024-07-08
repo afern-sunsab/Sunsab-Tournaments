@@ -11,8 +11,8 @@ function EventsHeader() {
                     I search for local tournaments and check the schedule for ones I've previously attended. 
                     Additionally, I can view any upcoming tournaments I’ve signed up for.</Typography>
             </div>
-            <div className="display">
-                
+            <div className="event-slideshow">
+
             </div>
         </div>
     )
