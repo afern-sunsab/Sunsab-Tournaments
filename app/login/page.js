@@ -1,28 +1,34 @@
 "use client";
-import { useState } from 'react';
-import { useUserAuth } from '@utils/auth-context.js';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@utils/firebase';
-import Link from 'next/link';
-import ShowAllEvent from '@components/userSide/ShowAllEvent'; // Adjust path as per your structure
+import { useState } from "react";
+import { useUserAuth } from "@utils/auth-context.js";
+import { auth } from "@utils/firebase";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  getAuth,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import Link from "next/link";
 
 export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   function handleSignOut() {
     firebaseSignOut();
   }
 
-  // Handles password reset
+  //Handles password reset
   function handlePasswordReset() {
+    const auth = getAuth();
+
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        alert('Password reset email sent.');
+        alert("Password reset email sent.");
       })
       .catch((error) => {
-        console.log('Error sending password reset email: ' + error.message);
+        console.log("Error sending password reset email: " + error.message);
       });
   }
 
@@ -31,16 +37,25 @@ export default function Page() {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Successfully signed in
+        //Only allow logging in if email is verified
+        /*if(userCredential.user.emailVerified){
+			console.log("Email is verified.");
+			window.location.href = `/dashboard`;
+		}
+		else{
+			alert("Email is not verified.");
+			//signOut(auth);
+		}
+      */
       })
       .catch((error) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
-        if (errorCode === 'auth/invalid-credential') {
-          alert('Invalid email or password');
+        if (errorCode === "auth/invalid-credential") {
+          alert("Invalid email or password");
         } else {
-          console.log(errorCode, 'Error message is ', errorMessage);
+          console.log(errorCode, "Error message is ", errorMessage);
         }
       });
   }
@@ -49,7 +64,10 @@ export default function Page() {
     <div>
       <div className="relative min-h-screen flex items-center justify-center">
         {!user && (
-          <div className="text-center bg-white dark:bg-gray-500 p-8 rounded-xl">
+          <div
+            dir="ltr"
+            className="text-center bg-white dark:bg-gray-500 p-8 rounded-xl"
+          >
             <p className="text-xl text-header-text-0 font-semibold mb-5 dark:text-dark-header-text-0">
               Sign in to your account
             </p>
@@ -108,7 +126,6 @@ export default function Page() {
             >
               Sign Out
             </button>
-            <ShowAllEvent user={user} /> {/* Pass user to ShowAllEvent */}
           </div>
         )}
       </div>

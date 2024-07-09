@@ -47,9 +47,7 @@ export default function Page({ params }) {
 
 	const handleSubmit = async (e) => {
 		brackets.forEach(async bracket => {
-			const newBracket = await createBracket(bracket);
-			// await initializeMatches(newBracket);
-			console.log(newBracket);
+			await createBracket(bracket);
 		});
 		alert("Created Brackets")
 	};

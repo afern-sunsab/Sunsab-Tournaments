@@ -2,7 +2,10 @@
 
 import { useUserAuth } from "@utils/auth-context";
 import { useState, useEffect } from "react";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { createTournament, dateToTimestamp, timestampToDate } from "@utils/firebase_services";
+import { strg } from "@utils/firebase";
+import EditThumbnail from "@components/images/edit-thumbnail";
 
 export default function Page() {
 	const { user } = useUserAuth();
@@ -17,7 +20,8 @@ export default function Page() {
 			brackets: [],
 			close_date: Date.now(),
 			event_date: Date.now(),
-			completed: false
+			completed: false,
+			thumbnail: ""
 		}
 	);
 
@@ -29,8 +33,15 @@ export default function Page() {
 	const handleDateChange = (e) => {
 		const { name, value } = e.target;
 		const date = new Date(value);
-		// const timestamp = dateToTimestamp(date);
 		setTournament((prevTournament) => ({ ...prevTournament, [name]: date }))
+	};
+
+	const handleThumbnailChange = async (e) => {
+		const file = e.target.files[0];
+		const thumbnailRef = ref(strg, `thumbnails/tournaments/${tournament.id}`);
+		await uploadBytes(thumbnailRef, file);
+		const thumbnailUrl = await getDownloadURL(thumbnailRef);
+		setTournament((prevTournament) => ({ ...prevTournament, thumbnail: thumbnailUrl }))
 	};
 
 	const handleSubmit = async (e) => {
@@ -107,6 +118,7 @@ export default function Page() {
 					onChange={handleDateChange}
 					className="border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-blue-500"
 				/>
+				<EditThumbnail handleThumbnailChange={handleThumbnailChange} thumbnail={tournament.thumbnail}/>
 				<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">Submit</button>
 			</form>
 		</main>
