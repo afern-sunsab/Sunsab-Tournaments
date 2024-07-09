@@ -7,8 +7,8 @@ import { timestampToDate } from "../../_utils/firebase_services";
 
 // Firebase
 import { doc, updateDoc, getDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from "@utils/firebase";
-import { auth } from '@utils/firebase';
+import { db } from "../../_utils/firebase";
+import { auth } from '../../_utils/firebase';
 
 const ShowAllEvent = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);

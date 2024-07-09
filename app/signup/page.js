@@ -11,7 +11,7 @@ import {
 import { useUserAuth } from "../_utils/auth-context.js";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../_utils/firebase";
-import { createUser } from "@utils/user_services";
+import { createUser } from "../_utils/user_services";
 
 //Change for user
 //Add items

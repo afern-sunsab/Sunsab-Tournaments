@@ -1,10 +1,10 @@
 "use client";
 import { useState } from 'react';
-import { useUserAuth } from '@utils/auth-context.js';
+import { useUserAuth } from '../_utils/auth-context';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@utils/firebase';
+import { auth } from '../_utils/firebase';
 import Link from 'next/link';
-import ShowAllEvent from '@components/userSide/ShowAllEvent'; // Adjust path as per your structure
+import ShowAllEvent from '../components/userSide/ShowAllEvent'; // Adjust path as per your structure
 
 export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
