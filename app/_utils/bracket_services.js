@@ -181,3 +181,25 @@ export const sendBracketToFirestore = async (bracket) => {
 	//Delete the live bracket
 	await update(bracketRef, null);
 }
+
+//Function to check if a bracket is in the RTDB
+//Returns true if the bracket is in the RTDB, false if not
+//You can pass a bracket object or a bracket docId
+export const isBracketInRTDB = async (bracket) => {
+	let bracketDocId = bracket;
+	if (typeof bracket === "object" && bracket.docId)
+	{
+		bracketDocId = bracket.docId;
+	}
+	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
+	const snapshot = await get(bracketRef);
+	const bracketData = snapshot.val();
+	if (bracketData)
+	{
+		//console.log("BRACKET_SERVICES: Bracket is in RTDB.");
+		//console.log(bracketData);
+		return true;
+	}
+
+	return false;
+}
