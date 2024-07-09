@@ -1,4 +1,4 @@
-import { createObject, updateObject, getUserRefs, createRef } from "./firebase_services";
+import { createObject, updateObject, getUserRefs, createRef, parseDocID } from "./firebase_services";
 //RTDB functions
 import { getDatabase, ref, set, get, child, update } from "firebase/database";
 import { rtdb } from "./firebase";
@@ -138,8 +138,8 @@ export const sendBracketToRTDB = async (bracket) => {
 	//Next, parse all players to convert references into docIDs
 	//Firebase RTDB doesn't like complex objects, so we'll store it as a string ("users/[docId]")
 	const bracketCopy = { ...bracket };
-	console.log("Bracket copy:")
-	console.log(bracketCopy);
+	//console.log("Bracket copy:")
+	//console.log(bracketCopy);
 	/*bracketCopy.matches.map((round) => {
 		round.map((match) => {
 			match.player1.user = match.player1.user.id;
@@ -186,11 +186,7 @@ export const sendBracketToFirestore = async (bracket) => {
 //Returns true if the bracket is in the RTDB, false if not
 //You can pass a bracket object or a bracket docId
 export const isBracketInRTDB = async (bracket) => {
-	let bracketDocId = bracket;
-	if (typeof bracket === "object" && bracket.docId)
-	{
-		bracketDocId = bracket.docId;
-	}
+	const bracketDocId = parseDocID(bracket);
 	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
 	const snapshot = await get(bracketRef);
 	const bracketData = snapshot.val();
@@ -202,4 +198,21 @@ export const isBracketInRTDB = async (bracket) => {
 	}
 
 	return false;
+}
+
+//Function to get a bracket from the RTDB
+//Returns the bracket object
+//You can pass a bracket object or a bracket docId
+export const getBracketFromRTDB = async (bracket) => {
+	const bracketDocId = parseDocID(bracket);
+	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
+	const snapshot = await get(bracketRef);
+	const bracketData = snapshot.val();
+	if (bracketData)
+	{
+		//console.log("BRACKET_SERVICES: Bracket is in RTDB.");
+		//console.log(bracketData);
+		return bracketData;
+	}
+	return null;
 }

@@ -86,6 +86,18 @@ export const getUserRefs = async (user) => {
 
 }
 
+//Little stock function to pull docID if passed a document
+export const parseDocID = (doc) => {
+	if (typeof doc === "object")
+	{
+		//If there's no docId, play it safe and return null
+		if (!doc.docId)
+			return null;
+		return doc.docId;
+	}
+	return doc;
+}
+
 //----------------
 //Deprecated functions
 //These interact directly with the database, but only functions in services will be maintained and updated

@@ -6,9 +6,9 @@ import { useUserAuth } from "../_utils/auth-context.js";
 import { joinTournament, leaveTournament } from "../_utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
-import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB } from "@utils/bracket_services";
+import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB } from "@utils/bracket_services";
 import { rtdb } from "@utils/firebase";
-import { ref, get } from "firebase/database";
+import { ref, get, set, onValue } from "firebase/database";
 
 export default function Page() {
     const [tournaments, setTournaments] = useState([]);
@@ -16,6 +16,9 @@ export default function Page() {
 	const [chosenBracket, setChosenBracket] = useState(null);
     const [users, setUsers] = useState(null);
     const { user } = useUserAuth();
+
+	//Meant to hold info loaded from the RTDB
+	const [realtimeBracket, setRealtimeBracket] = useState(null);
 
     /*useEffect(() => {
         const fetchTournaments = async () => {
@@ -47,7 +50,7 @@ export default function Page() {
 		//^This actually contains the docid!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (bracket) {
 			await sendBracketToRTDB(bracket);
-			console.log("RTDBTEST: Bracket sent to RTDB.");
+			//console.log("RTDBTEST: Bracket sent to RTDB.");
 		}
 	}
 
@@ -72,8 +75,21 @@ export default function Page() {
 		}*/
 		if (await isBracketInRTDB(docID)) {
 			console.log("Bracket already exists in RTDB.");
+			const newBracket = await getBracketFromRTDB(docID);
+			console.log(newBracket);
+			setRealtimeBracket(newBracket);
+
+			//Set up a listener for the bracket
+			const bracketRef = ref(rtdb, `brackets/${docID}`);
+			onValue(bracketRef, (snapshot) => {
+				const data = snapshot.val();
+				console.log("RTDBTEST: Bracket updated in RTDB.");
+				console.log(data);
+				setRealtimeBracket(data);
+			});
 		} else {
 			console.log("Bracket does not exist in RTDB.");
+			setRealtimeBracket(null);
 		}
 	}
 
@@ -91,6 +107,16 @@ export default function Page() {
 			</div>
 			:
 			<p>No brackets found.</p>
+			}
+			<h1>RTDB Data</h1>
+			{
+				realtimeBracket ?
+				<div>
+					<p>Here be data (Just parsed JSON data for now)</p>
+					<p>{JSON.stringify(realtimeBracket)}</p>
+				</div>
+				:
+				<p>No RTDB data found.</p>
 			}
 
 		</main>
