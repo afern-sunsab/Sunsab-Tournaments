@@ -259,3 +259,35 @@ export const createBracketListener = async (bracket, callback) => {
 
 	This sends a circle function to the page that updates the bracket state whenever the bracket is updated in the RTDB
 */
+
+//Function to declare a winner in a match
+//The winner will be moved to the next round
+//The next round's match number will be the current match number divided by 2, rounded up
+//If the match is in the final round, the bracket will be marked as complete
+//round, match, and winner are all integers starting at 1, acting as indexes
+//Returns the updated bracket
+export const declareWinner = async (bracket, round, match, winner) => {
+	//Copy the bracket
+	const bracketCopy = { ...bracket };
+	//Find the match
+	const matchData = bracketCopy.matches["round" + round]["match" + match];
+	//Find the next match
+	const nextRound = "round" + (round + 1);
+	const nextMatch = "match" + Math.ceil(match / 2);
+	//Declare the winner
+	const winnerData = matchData["player" + winner].user;
+
+	//If the the current round only has one match, it is the final match
+	//Mark the bracket as complete
+	if (Object.keys(bracketCopy.matches["round" + round]).length === 1) {
+		bracketCopy.completed = true;
+	}
+	else{
+		//Move the winner to the next round
+		bracketCopy.matches[nextRound][nextMatch]["player" + (match % 2 + 1)].user = winnerData;
+	}
+	
+	//Update the bracket
+	await updateBracket(bracketCopy);
+	return bracketCopy;
+}
