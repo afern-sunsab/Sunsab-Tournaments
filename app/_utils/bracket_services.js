@@ -1,8 +1,9 @@
 import { createObject, updateObject, getUserRefs, createRef, parseDocID } from "./firebase_services";
 //RTDB functions
-import { getDatabase, ref, set, get, child, update } from "firebase/database";
+import { getDatabase, ref, set, get, child, update, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
 
+//Default data structure for a bracket
 const defaultBracket = {
 	name: "",
 	style: "",
@@ -12,8 +13,6 @@ const defaultBracket = {
 // Function to create a new bracket
 // "bracket" is a JavaScript object representing a bracket document
 export const createBracket = async (bracket) => {
-	//Default data structure for a bracket
-	
 	// Merge default data with provided data
 	const newBracket = { ...defaultBracket, ...bracket };
 	// Create the bracket
@@ -216,3 +215,26 @@ export const getBracketFromRTDB = async (bracket) => {
 	}
 	return null;
 }
+
+//Function to create a listener for a bracket in the RTDB
+//Returns a callback function that runs when the bracket is updated
+//Use a callback function within the page to update the bracket information in your useState or whatever
+//You can pass a bracket object or a bracket docId
+export const createBracketListener = async (bracket, callback) => {
+	const bracketDocId = parseDocID(bracket);
+	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
+	return onValue(bracketRef, (snapshot) => {
+		const data = snapshot.val();
+		console.log("BRACKET_SERVICES: Bracket updated in RTDB.");
+		console.log(data);
+		callback(data);
+	});
+}
+/*
+	^^^This one's a bit complex, so here's an example implementation:
+	createBracketListener(docID, (data) => {
+		setRealtimeBracket(data);
+	});
+
+	This sends a circle function to the page that updates the bracket state whenever the bracket is updated in the RTDB
+*/

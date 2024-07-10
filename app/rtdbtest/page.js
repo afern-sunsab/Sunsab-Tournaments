@@ -6,7 +6,7 @@ import { useUserAuth } from "../_utils/auth-context.js";
 import { joinTournament, leaveTournament } from "../_utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
-import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB } from "@utils/bracket_services";
+import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener } from "@utils/bracket_services";
 import { rtdb } from "@utils/firebase";
 import { ref, get, set, onValue } from "firebase/database";
 
@@ -80,9 +80,14 @@ export default function Page() {
 			setRealtimeBracket(newBracket);
 
 			//Set up a listener for the bracket
-			const bracketRef = ref(rtdb, `brackets/${docID}`);
+			/*const bracketRef = ref(rtdb, `brackets/${docID}`);
 			onValue(bracketRef, (snapshot) => {
 				const data = snapshot.val();
+				console.log("RTDBTEST: Bracket updated in RTDB.");
+				console.log(data);
+				setRealtimeBracket(data);
+			});*/
+			createBracketListener(docID, (data) => {
 				console.log("RTDBTEST: Bracket updated in RTDB.");
 				console.log(data);
 				setRealtimeBracket(data);
