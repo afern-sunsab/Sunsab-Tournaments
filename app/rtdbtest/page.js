@@ -54,6 +54,19 @@ export default function Page() {
 		}
 	}
 
+	const handleBracketToFirestore = async (bracketID) => {
+		console.log("RTDBTEST: Sending bracket to Firestore.");
+		console.log("RTDBTEST: Bracket ID: " + bracketID);
+		console.log("RTDBTEST: Choosing bracket: " + chosenBracket);
+
+		const bracket = brackets.find(b => b.docId === bracketID);
+
+		if (bracket) {
+			await sendBracketToFirestore(bracket);
+			console.log("RTDBTEST: Bracket sent to Firestore.");
+		}
+	};
+
 	const handleChosenBracket = async (docID) => {
 		if (docID === "") {
 			setChosenBracket(null);
@@ -119,6 +132,7 @@ export default function Page() {
 				<div>
 					<p>Here be data (Just parsed JSON data for now)</p>
 					<p>{JSON.stringify(realtimeBracket)}</p>
+					<button onClick={() => handleBracketToFirestore(chosenBracket)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Banish Bracket to Firestore</button>
 				</div>
 				:
 				<p>No RTDB data found.</p>

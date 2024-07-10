@@ -1,7 +1,9 @@
 import { createObject, updateObject, getUserRefs, createRef, parseDocID } from "./firebase_services";
 //RTDB functions
-import { getDatabase, ref, set, get, child, update, onValue } from "firebase/database";
+import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
+import { db } from "./firebase";
+import { doc } from "firebase/firestore";
 
 //Default data structure for a bracket
 const defaultBracket = {
@@ -28,7 +30,7 @@ export const updateBracket = async (bracket) => {
 	const { docId, ...bracketPrunedDocID } = bracket;
 
 	//Merge default data with provided data, in case structure has changed
-	const updatedBracket = { ...defaultBracket, ...bracketPrunedDocID };
+	const updatedBracket = { ...defaultBracket, ...bracket };
 	await updateObject("brackets", updatedBracket);
 }
 
@@ -149,36 +151,55 @@ export const sendBracketToRTDB = async (bracket) => {
 		Object.keys(bracketCopy.matches[round]).map((match) => {
 			if (bracketCopy.matches[round][match].player1.user)
 			{
+				//Small fix for a mistake: If user is a string with just a docId, don't convert it
+				if (typeof bracketCopy.matches[round][match].player1.user !== "string")
 				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id;
 			}
 			if (bracketCopy.matches[round][match].player2.user)
 			{
+				if (typeof bracketCopy.matches[round][match].player2.user !== "string")
 				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id;
 			}
 		});
 	});
 	
-	await set(bracketRef, bracket);
+	await set(bracketRef, bracketCopy);
 }
 
 export const sendBracketToFirestore = async (bracket) => {
 	//Copy the live bracket data into the permanent document
 	//Then delete the live bracket (RIP)
-	const bracketRef = ref(getDatabase(), `brackets/${bracket.docId}`);
-	const bracketSnapshot = await get(child(bracketRef));
-	const bracketData = bracketSnapshot.val();
+	const bracketDocId = parseDocID(bracket);
+
+	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
+	const snapshot = await get(bracketRef);
+	const bracketData = snapshot.val();
 	if (bracketData)
 	{
-		await updateBracket(bracketData);
-		console
+		//First, convert all players back to references
+		//They should all be strings containing docIDs
+		const bracketCopy = { ...bracketData };
+		await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
+			await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
+			  if (bracketCopy.matches[round][match].player1.user) {
+				bracketCopy.matches[round][match].player1.user = await doc(db, "users", bracketCopy.matches[round][match].player1.user)
+			  }
+			  if (bracketCopy.matches[round][match].player2.user) {
+				bracketCopy.matches[round][match].player2.user = await doc(db, "users", bracketCopy.matches[round][match].player2.user)
+			  }
+			}));
+		  }));
+		console.log("Bracket copy:")
+		console.log(bracketCopy);
+		await updateBracket(bracketCopy);
 	}
 	else
 	{
-		console.log("No bracket data found in RTDB for bracket " + bracket.docId);
+		console.log("No bracket data found in RTDB for bracket " + bracketDocId);
 	}
 
 	//Delete the live bracket
-	await update(bracketRef, null);
+	await remove(bracketRef)
 }
 
 //Function to check if a bracket is in the RTDB
