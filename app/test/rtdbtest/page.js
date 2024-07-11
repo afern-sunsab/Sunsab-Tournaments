@@ -6,7 +6,7 @@ import { useUserAuth } from "@utils/auth-context.js";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
-import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener, convertBracketToUserData } from "@utils/bracket_services";
+import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener, convertBracketToUserData, updateBracket } from "@utils/bracket_services";
 import { rtdb } from "@utils/firebase";
 import { ref, get, set, onValue } from "firebase/database";
 
@@ -111,6 +111,13 @@ export default function Page() {
 		}
 	}
 
+	const handleWinner = async (round, match, player) => {
+		const newBracket = { ...realtimeBracket };
+		newBracket.matches[round][match][player].score += 1;
+		setRealtimeBracket(newBracket);
+		updateBracket(newBracket);
+	}
+
     return (
 		<main className="bg-white text-black p-6">
 			{brackets.length > 0 ?
@@ -130,16 +137,29 @@ export default function Page() {
 			{
 				realtimeBracket && realtimeBracket.matches ?
 				<div>
-					{Object.entries(realtimeBracket.matches).map(([roundName, round], index) => (
-						<div key={index}>
-							<div>{roundName}</div>
-							{Object.entries(round).map(([matchName, match], index) => (
-								<div key={index}>
-									{match.player1.user ? match.player1.user.name : "Undefined Player 1"} vs {match.player2.user ? match.player2.user.name : "Undefined Player 2"}
-								</div>
-							))}
-						</div>
-					))}
+					<div className="flex flex-row items-center justify-between py-3 text-center">
+						{Object.entries(realtimeBracket.matches).map(([roundName, round], index) => (
+							<div key={index} >
+								<div>{roundName}</div>
+								{Object.entries(round).map(([matchName, match], index) => (
+									<div key={index} className="flex flex-col py-2">
+										<div>{matchName}</div>
+										{match.player1.user ?
+										<div>
+											<button onClick={() => handleWinner(roundName, matchName, "player1")}>
+												{match.player1.user.name} : {match.player1.score}
+											</button>
+										</div>
+										: "Undefined Player 1"}
+										{match.player2.user ?
+										<div>{match.player2.user.name} : {match.player2.score}</div>
+										: "Undefined Player 2"}
+									</div>
+								))}
+							</div>
+						))}
+						
+					</div>
 					<button onClick={() => handleBracketToFirestore(chosenBracket)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Banish Bracket to Firestore</button>
 				</div>
 				:

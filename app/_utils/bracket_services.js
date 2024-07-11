@@ -29,11 +29,23 @@ export const createBracket = async (bracket) => {
 // Function to update a bracket
 // "bracket" is a JavaScript object representing a bracket document
 export const updateBracket = async (bracket) => {
-	const { docId, ...bracketPrunedDocID } = bracket;
+	//const { docId, ...bracketPrunedDocID } = bracket;
 
 	//Merge default data with provided data, in case structure has changed
 	const updatedBracket = { ...defaultBracket, ...bracket };
-	await updateObject("brackets", updatedBracket);
+	//Check to seeif bracket is not in the RTDB
+	const bracketInRTDB = await isBracketInRTDB(bracket);
+	if (bracketInRTDB)
+	{
+		//If it is, update the RTDB
+		const bracketCopy = await convertBracketToDocIDs(updatedBracket);
+		console.log("Bracket copy being updated to RTDB:")
+		console.log(bracketCopy);
+		const bracketRef = ref(rtdb, `brackets/${bracketCopy.docId}`);
+		await set(bracketRef, bracketCopy);
+	}
+	else
+		await updateObject("brackets", updatedBracket);
 }
 
 // Function to initialize matches
@@ -302,7 +314,7 @@ export const declareWinner = async (bracket, round, match, winner) => {
 //Accepts a bracket object with user references
 //Returns a bracket object with user data as a javascript object instead of references
 export const convertBracketToUserData = async (bracket) => {
-	console.log("Converting bracket to user data:")
+	//console.log("Converting bracket to user data:")
 	//Copy the bracket
 	const bracketCopy = { ...bracket };
 	//Convert all user references to user data
@@ -361,12 +373,16 @@ export const convertBracketToDocIDs = async (bracket) => {
 	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
 		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
 		  if (bracketCopy.matches[round][match].player1.user) {
-			if (typeof bracketCopy.matches[round][match].player1.user !== "string")
+			if (bracketCopy.matches[round][match].player1.user.id)
 				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id
+			else if (bracketCopy.matches[round][match].player1.user.docId)
+				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.docId
 		  }
 		  if (bracketCopy.matches[round][match].player2.user) {
-			if (typeof bracketCopy.matches[round][match].player2.user !== "string")
+			if (bracketCopy.matches[round][match].player2.user.id)
 				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id
+			else if (bracketCopy.matches[round][match].player2.user.docId)
+				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.docId
 		  }
 		}));
 	  }));
