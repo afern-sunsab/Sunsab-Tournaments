@@ -1,9 +1,9 @@
 'use client'
 import React from "react"
 import { useState, useEffect } from "react"
-import { getTournaments, updateTournament, getUser, getUserRef } from "../_utils/firebase_services"
-import { useUserAuth } from "../_utils/auth-context.js";
-import { joinTournament, leaveTournament } from "../_utils/tournament_services";
+import { getTournaments, updateTournament, getUser, getUserRef } from "@utils/firebase_services"
+import { useUserAuth } from "@utils/auth-context.js";
+import { joinTournament, leaveTournament } from "@utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
 import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener } from "@utils/bracket_services";
