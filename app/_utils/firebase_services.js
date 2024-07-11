@@ -17,17 +17,25 @@ export const getObjects = async (type, queryData = null) => {
 	else
 		documents = await getDocs(collection(db, type));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
-	console.log(`Fetched ${type} objects`)
+	//console.log(`Fetched ${type} objects`)
 	return data;
 }
 
 export const getObject = async (type, id) => {
 	const document = await getDocs(query(collection(db, type), where("id", "==", id)));
 	const object = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
-	console.log(`Fetched ${type} object`)
-	console.log(object);
+	//console.log(`Fetched ${type} object`)
+	//console.log(object);
 	return object;
 }
+
+export const getObjectByDocID = async (type, docId) => {
+	const document = await getDoc(doc(db, type, docId));
+	const object = {docId: docId, ...document.data()};
+	//console.log(`Fetched ${type} object`)
+	//console.log(object);
+	return object;
+};
 
 export const createObject = async (type, object) => {
 	const document = await addDoc(collection(db, type), object)
@@ -51,7 +59,7 @@ export const updateObject = async (type, updatedObject, confirm = false) => {
 export const dateToTimestamp = (value) => {
 	const date = new Date(value);
 	const timestamp = Timestamp.fromDate(date);
-	console.log(`Converted date ${date} to timestamp ${timestamp}`)
+	//console.log(`Converted date ${date} to timestamp ${timestamp}`)
 	return timestamp;
 }
 
@@ -59,11 +67,11 @@ export const dateToTimestamp = (value) => {
 export const timestampToDate = (timestamp) => {
 	//if timestamp is a string, just return it & yell at whoever entered a string into a timestamp field
 	if (typeof timestamp === 'string') {
-		console.log(`Timestamp is a string, returning it as is: ${timestamp}`);
+		//console.log(`Timestamp is a string, returning it as is: ${timestamp}`);
 		return timestamp;
 	}
 	const date = new Date(timestamp.toDate()).toISOString().split('T')[0];
-	console.log(`Converted timestamp ${timestamp} to date ${date}`);
+	//console.log(`Converted timestamp ${timestamp} to date ${date}`);
 	return date;
 }
 
@@ -98,9 +106,8 @@ export const parseDocID = (doc) => {
 	return doc;
 }
 
-//----------------
-//Deprecated functions
-//These interact directly with the database, but only functions in services will be maintained and updated
+//Sort of still-used function to get a user document from the database
+//Uses the uid from Firebase Auth to find the user document
 export const getUser = async (uid) => {
 	console.log(`Fetching user ${uid}`);
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
@@ -110,12 +117,16 @@ export const getUser = async (uid) => {
 	return object;
 }
 
+//----------------
+//Deprecated functions
+//These interact directly with the database, but only functions in services will be maintained and updated
+
 //Function to get all users from the database
 //Just for testing purposes, don't actually use this
 export const getUsers = async () => {
 	const documents = await getDocs(collection(db, "users"));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
-	console.log("Fetched users")
+	//console.log("Fetched users")
 	return data;
 }
 
@@ -125,7 +136,7 @@ export const getUsers = async () => {
 export const getUserRef = async (uid) => {
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const userRef = doc(db, "users", document.docs[0].id);
-	console.log(`Fetched user reference ${userRef}`);
+	//console.log(`Fetched user reference ${userRef}`);
 	return userRef;
 }
 
@@ -152,8 +163,8 @@ export const getTournaments = async () => {
 		}
 	}
 
-    console.log("Fetched tournaments")
-	console.log(data);
+    //console.log("Fetched tournaments")
+	//console.log(data);
     return data;
 }
 
@@ -172,28 +183,28 @@ export const getTournament = async (id) => {
 export const getBrackets = async () => {
 	const documents = await getDocs(collection(db, "brackets"));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
-	console.log("Fetched brackets")
+	//console.log("Fetched brackets")
 	return data;
 }
 
 export const getBracket = async (id) => {
 	const document = await getDocs(query(collection(db, "brackets"), where("id", "==", id)));
 	const bracket = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
-	console.log(`Fetched bracket ${bracket.name}`)
+	//console.log(`Fetched bracket ${bracket.name}`)
 	return bracket;
 }
 
 export const getMatches = async () => {
 	const documents = await getDocs(collection(db, "matches"));
 	const data = documents.docs.map((doc) => ({docId: doc.id, ...doc.data(),}));
-	console.log("Fetched matches")
+	//console.log("Fetched matches")
 	return data;
 }
 
 export const getMatch = async (id) => {
 	const document = await getDocs(query(collection(db, "matches"), where("id", "==", id)));
 	const match = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
-	console.log(`Fetched match ${match.name}`)
+	//console.log(`Fetched match ${match.name}`)
 	return match;
 }
 
@@ -241,20 +252,20 @@ export const createTournament = async (tournament) => {
 	//Only update fields that are provided in the tournament object
 	const newTournament = {...defaultTournament, ...tournament};
 	const document = await addDoc(collection(db, "tournaments"), newTournament)
-	console.log(`Added new tournament ${tournament.name}`)
+	//console.log(`Added new tournament ${tournament.name}`)
 	return document;
 
 }
 
 export const createBracket = async () => {
 	const document = await addDoc(collection(db, "brackets"), bracket)
-	console.log(`Added new bracket ${bracket.name}`)
+	//console.log(`Added new bracket ${bracket.name}`)
 	return document;
 }
 
 export const createMatch = async () => {
 	const document = await addDoc(collection(db, "matches"), match)
-	console.log(`Added new match ${match.name}`)
+	//console.log(`Added new match ${match.name}`)
 	return document;
 }
 
@@ -262,7 +273,7 @@ export const updateUser = async () => {
 	const { docId, ...updatedUserPrunedDocID } = updatedUser;
 	const userRef = doc(db, "users", docId);
 	await updateDoc(userRef, updatedUserPrunedDocID);
-	console.log(`Updated user ${updatedUser.name}`);
+	//console.log(`Updated user ${updatedUser.name}`);
 }
 
 export const updateTournament = async (tournament) => {
@@ -283,19 +294,19 @@ export const updateTournament = async (tournament) => {
 	
 	const tournamentRef = doc(db, "tournaments", docId);
 	await updateDoc(tournamentRef, tournamentPrunedDocID);
-	console.log(`Updated tournament ${tournament.name}`);
+	//console.log(`Updated tournament ${tournament.name}`);
 }
 
 export const updateBracket = async () => {
 	const { docId, ...updatedBracketPrunedDocID } = updatedBracket;
 	const bracketRef = doc(db, "brackets", docId);
 	await updateDoc(bracketRef, updatedBracketPrunedDocID);
-	console.log(`Updated bracket ${updatedBracket.name}`);
+	//console.log(`Updated bracket ${updatedBracket.name}`);
 }
 
 export const updatematch = async () => {
 	const { docId, ...updatedMatchPrunedDocID } = updatedMatch;
 	const matchRef = doc(db, "matches", docId);
 	await updateDoc(matchRef, updatedMatchPrunedDocID);
-	console.log(`Updated match ${updatedMatch.name}`);
+	//console.log(`Updated match ${updatedMatch.name}`);
 }

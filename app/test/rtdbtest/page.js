@@ -6,7 +6,7 @@ import { useUserAuth } from "@utils/auth-context.js";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
-import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener } from "@utils/bracket_services";
+import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener, convertBracketToUserData } from "@utils/bracket_services";
 import { rtdb } from "@utils/firebase";
 import { ref, get, set, onValue } from "firebase/database";
 
@@ -128,10 +128,18 @@ export default function Page() {
 			}
 			<h1>RTDB Data</h1>
 			{
-				realtimeBracket ?
+				realtimeBracket && realtimeBracket.matches ?
 				<div>
-					<p>Here be data (Just parsed JSON data for now)</p>
-					<p>{JSON.stringify(realtimeBracket)}</p>
+					{Object.entries(realtimeBracket.matches).map(([roundName, round], index) => (
+						<div key={index}>
+							<div>{roundName}</div>
+							{Object.entries(round).map(([matchName, match], index) => (
+								<div key={index}>
+									{match.player1.user ? match.player1.user.name : "Undefined Player 1"} vs {match.player2.user ? match.player2.user.name : "Undefined Player 2"}
+								</div>
+							))}
+						</div>
+					))}
 					<button onClick={() => handleBracketToFirestore(chosenBracket)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Banish Bracket to Firestore</button>
 				</div>
 				:

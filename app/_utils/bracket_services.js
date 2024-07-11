@@ -4,6 +4,7 @@ import { getDatabase, ref, set, get, child, update, remove, onValue } from "fire
 import { rtdb } from "./firebase";
 import { db } from "./firebase";
 import { doc } from "firebase/firestore";
+import { getUserData } from "./user_services";
 
 //Default data structure for a bracket
 const defaultBracket = {
@@ -138,7 +139,7 @@ export const sendBracketToRTDB = async (bracket) => {
 	}*/
 	//Next, parse all players to convert references into docIDs
 	//Firebase RTDB doesn't like complex objects, so we'll store it as a string ("users/[docId]")
-	const bracketCopy = { ...bracket };
+	let bracketCopy = { ...bracket };
 	//console.log("Bracket copy:")
 	//console.log(bracketCopy);
 	/*bracketCopy.matches.map((round) => {
@@ -147,7 +148,7 @@ export const sendBracketToRTDB = async (bracket) => {
 			match.player2.user = match.player2.user.id;
 		});
 	});*/
-	Object.keys(bracketCopy.matches).map((round) => {
+	/*Object.keys(bracketCopy.matches).map((round) => {
 		Object.keys(bracketCopy.matches[round]).map((match) => {
 			if (bracketCopy.matches[round][match].player1.user)
 			{
@@ -161,7 +162,8 @@ export const sendBracketToRTDB = async (bracket) => {
 				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id;
 			}
 		});
-	});
+	});*/
+	bracketCopy = await convertBracketToDocIDs(bracketCopy);
 	
 	await set(bracketRef, bracketCopy);
 }
@@ -178,8 +180,8 @@ export const sendBracketToFirestore = async (bracket) => {
 	{
 		//First, convert all players back to references
 		//They should all be strings containing docIDs
-		const bracketCopy = { ...bracketData };
-		await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
+		let bracketCopy = { ...bracketData };
+		/*await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
 			await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
 			  if (bracketCopy.matches[round][match].player1.user) {
 				bracketCopy.matches[round][match].player1.user = await doc(db, "users", bracketCopy.matches[round][match].player1.user)
@@ -188,7 +190,8 @@ export const sendBracketToFirestore = async (bracket) => {
 				bracketCopy.matches[round][match].player2.user = await doc(db, "users", bracketCopy.matches[round][match].player2.user)
 			  }
 			}));
-		  }));
+		  }));*/
+		bracketCopy = await convertBracketToUserRefs(bracketCopy);
 		console.log("Bracket copy:")
 		console.log(bracketCopy);
 		await updateBracket(bracketCopy);
@@ -227,9 +230,10 @@ export const getBracketFromRTDB = async (bracket) => {
 	const bracketDocId = parseDocID(bracket);
 	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
 	const snapshot = await get(bracketRef);
-	const bracketData = snapshot.val();
+	let bracketData = snapshot.val();
 	if (bracketData)
 	{
+		bracketData = await convertBracketToUserData(bracketData);
 		//console.log("BRACKET_SERVICES: Bracket is in RTDB.");
 		//console.log(bracketData);
 		return bracketData;
@@ -244,11 +248,12 @@ export const getBracketFromRTDB = async (bracket) => {
 export const createBracketListener = async (bracket, callback) => {
 	const bracketDocId = parseDocID(bracket);
 	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
-	return onValue(bracketRef, (snapshot) => {
+	return onValue(bracketRef, async (snapshot) => {
 		const data = snapshot.val();
+		const bracketData = await convertBracketToUserData(data);
 		console.log("BRACKET_SERVICES: Bracket updated in RTDB.");
-		console.log(data);
-		callback(data);
+		console.log(bracketData);
+		callback(bracketData);
 	});
 }
 /*
@@ -289,5 +294,80 @@ export const declareWinner = async (bracket, round, match, winner) => {
 	
 	//Update the bracket
 	await updateBracket(bracketCopy);
+	return bracketCopy;
+}
+
+//Function to convert a bracket's user references to user data
+//Accepts a bracket object with user references
+//Returns a bracket object with user data as a javascript object instead of references
+export const convertBracketToUserData = async (bracket) => {
+	console.log("Converting bracket to user data:")
+	//Copy the bracket
+	const bracketCopy = { ...bracket };
+	//Convert all user references to user data
+	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
+		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
+		  if (bracketCopy.matches[round][match].player1.user) {
+			if (typeof bracketCopy.matches[round][match].player1.user === "string")
+				bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user)
+			else
+				bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user.id)
+			//Test
+			//console.log("Player 1 data:")
+			//console.log(bracketCopy.matches[round][match].player1.user);
+		  }
+		  if (bracketCopy.matches[round][match].player2.user) {
+			if (typeof bracketCopy.matches[round][match].player2.user === "string")
+				bracketCopy.matches[round][match].player2.user = await getUserData(bracketCopy.matches[round][match].player2.user)
+			else
+				bracketCopy.matches[round][match].player2.user = await getUserData(bracketCopy.matches[round][match].player2.user.id)
+		  }
+		}));
+	  }));
+	return bracketCopy;
+}
+
+//Function to convert a bracket's user data to user references
+//Accepts a bracket object with user data
+//Returns a bracket object with user references instead of data
+export const convertBracketToUserRefs = async (bracket) => {
+	//Copy the bracket
+	const bracketCopy = { ...bracket };
+	//Convert all user data to user references
+	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
+		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
+		  if (bracketCopy.matches[round][match].player1.user) {
+			if (typeof bracketCopy.matches[round][match].player1.user !== "string")
+				bracketCopy.matches[round][match].player1.user = createRef("users", bracketCopy.matches[round][match].player1.user.id)
+		  }
+		  if (bracketCopy.matches[round][match].player2.user) {
+			if (typeof bracketCopy.matches[round][match].player2.user !== "string")
+				bracketCopy.matches[round][match].player2.user = createRef("users", bracketCopy.matches[round][match].player2.user.id)
+		  }
+		}));
+	  }));
+	return bracketCopy;
+}
+
+//Function to convert a bracket's user data to a docId string
+//Accepts a bracket object with user data OR user references (probably)
+//Returns a bracket object with user references as strings containing docIDs
+//Used to convert bracket data to a format that can be stored in the RTDB
+export const convertBracketToDocIDs = async (bracket) => {
+	//Copy the bracket
+	const bracketCopy = { ...bracket };
+	//Convert all user data to docIDs
+	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
+		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
+		  if (bracketCopy.matches[round][match].player1.user) {
+			if (typeof bracketCopy.matches[round][match].player1.user !== "string")
+				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id
+		  }
+		  if (bracketCopy.matches[round][match].player2.user) {
+			if (typeof bracketCopy.matches[round][match].player2.user !== "string")
+				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id
+		  }
+		}));
+	  }));
 	return bracketCopy;
 }
