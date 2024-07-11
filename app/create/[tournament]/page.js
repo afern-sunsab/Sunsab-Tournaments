@@ -1,24 +1,12 @@
 "use client"
 
 import { getTournament } from "@utils/firebase_services";
-import { createBracket, initializeMatches } from "@utils/bracket_services";
+import { createBracket, defaultBracket } from "@utils/bracket_services";
 import { useState, useEffect } from "react";
 
 export default function Page({ params }) {
 	const [tournament, setTournament] = useState();
-	const [brackets, setBrackets] = useState([{
-		name: "",
-		style: "",
-		capacity: 0,
-		matches: [],
-	}]);
-
-	const bracketTemplate = {
-		name: "",
-		style: "",
-		capacity: 0,
-		matches: [],
-	}
+	const [brackets, setBrackets] = useState([defaultBracket]);
 
 	useEffect(() => {
 		const fetchTournament = async () => {
@@ -36,7 +24,7 @@ export default function Page({ params }) {
 	};
 
 	const handleAddBracket = () => {
-		setBrackets([...brackets, { ...bracketTemplate }]);
+		setBrackets([...brackets, { ...defaultBracket }]);
 	};
 
 	const handleRemoveBracket = (e, index) => {

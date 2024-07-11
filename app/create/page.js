@@ -6,24 +6,11 @@ import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { createTournament, dateToTimestamp, timestampToDate } from "@utils/firebase_services";
 import { strg } from "@utils/firebase";
 import EditThumbnail from "@components/images/edit-thumbnail";
+import { defaultTournament } from "@utils/tournament_services";
 
 export default function Page() {
 	const { user } = useUserAuth();
-	const [tournament, setTournament] = useState(
-		{
-			id: 0,
-			name: "",
-			description: "",
-			game: "",
-			entrant_limit: 0,
-			entrants: [],
-			brackets: [],
-			close_date: Date.now(),
-			event_date: Date.now(),
-			completed: false,
-			thumbnail: ""
-		}
-	);
+	const [tournament, setTournament] = useState(defaultTournament);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -48,14 +35,16 @@ export default function Page() {
 		e.preventDefault();
 		const converted_close_date = new Date(tournament.close_date);
 		const converted_event_date = new Date(tournament.event_date);
-		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date }
+		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date, owner: user.docId }
 		const document = await createTournament(newTournament);
 		window.location.href = `/create/${document.id}`;
 	}
 
 	return(
 		<main className="bg-white text-black p-6">
+		{user ? (
 			<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+				{console.log(user)}
 				<label htmlFor="name" className="text-sm font-medium">Name:</label>
 				<input
 					type="text"
@@ -121,6 +110,9 @@ export default function Page() {
 				<EditThumbnail handleThumbnailChange={handleThumbnailChange} thumbnail={tournament.thumbnail}/>
 				<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">Submit</button>
 			</form>
+		) : (
+			<h1>You must be logged in to create a tournament</h1>
+		)}
 		</main>
 	)
 }

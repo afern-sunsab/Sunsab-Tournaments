@@ -7,10 +7,11 @@ import { doc } from "firebase/firestore";
 import { getUserData } from "./user_services";
 
 //Default data structure for a bracket
-const defaultBracket = {
+export const defaultBracket = {
 	name: "",
 	style: "",
 	matches: [],
+	capacity: 0
 };
 
 // Function to create a new bracket

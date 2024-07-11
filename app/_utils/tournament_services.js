@@ -2,16 +2,20 @@
 import { get } from "firebase/database";
 import {getObject, getObjects, createObject, updateObject, createRef, getUserRefs} from "./firebase_services";
 
-const defaultTournament = {
-	name: "New Tournament",
-	game: "Game",
-	description: "Description",
+export const defaultTournament = {
+	id: 0,
+	name: "",
+	description: "",
+	game: "",
 	entrant_limit: 0,
-	close_date: new Date(),
-	event_date: new Date(),
-	entrants: [], //Array of user references
-	brackets: [], //Array of bracket references
-	completed: false
+	entrants: [],
+	brackets: [],
+	close_date: Date.now(),
+	event_date: Date.now(),
+	completed: false,
+	owner: null,
+	admins: [],
+	thumbnail: ""
 }
 
 export const createTournament = async (tournament) => {
