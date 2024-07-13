@@ -1,21 +1,24 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react"
 import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets"
 
+export default function SingleElimination() {
+
   const rounds = [
+    
     {
       title: "Round 1",
       seeds: [
+        {},
         {},
         {
           id: 1,
           date: new Date().toDateString(),
           teams: [
-            { id: 1, name: "da", score: 2 },
-            { id: 3, name: "Kitties", score: 6 }
+            { id: 1, name: "Hello", score: 2 },
+            { id: 3, name: "Mittens", score: 6 }
           ]
         },
-        {},
+        
         {
           id: 1,
           date: new Date().toDateString(),
@@ -67,7 +70,6 @@ import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets"
     )
   }
   
-  const SingleElimination = () => {
     return (
       <Bracket
         mobileBreakpoint={767}
@@ -76,6 +78,4 @@ import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets"
         swipeableProps={{ enableMouseEvents: true, animateHeight: true }}
       />
     )
-  }
-
-export default SingleElimination
+}

@@ -3,7 +3,7 @@
 import React from 'react';
 import DoubleElimination from './components/double-elimination';
 import LoadingBracket from './components/loading';
-import SingleElimination from './components/single-elimination';
+import SingleElimination from './components/SingleElimination';
 
 const App = () => {
   return (
