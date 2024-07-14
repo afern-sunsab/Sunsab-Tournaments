@@ -1,62 +1,87 @@
-import React from "react"
-import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets"
-import "./loading.css"
-const loadingData = [
-  {
-    title: "Loading..",
-    seeds: [
-      {},
-      {
-        id: 1
-      },
-      {},
-      {
-        id: 1
-      }
-    ]
-  },
-  {
-    title: "Loading..",
-    seeds: [...new Array(2)].fill({
-      id: 1
-    })
-  },
-  {
-    title: "Loading..",
-    seeds: [...new Array(1)].fill({
-      id: 1
-    })
-  }
-]
+import React from "react";
+import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets";
+import { keyframes, styled } from "styled-components";
 
-const RenderLoadingSeed = ({ seed, breakpoint }) => {
+const ShimmerKeyFrames = keyframes`
+    100% {
+      transform: translateX(100%);
+    }
+`;
+
+const StyledSkeletonItem = styled(SeedItem)`
+  background-color: #e2e2e2;
+  background-repeat: repeat-y;
+  position: relative;
+  color: #e2e2e2;
+  overflow: hidden;
+
+  &:after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0) 20%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+
+    animation: ${ShimmerKeyFrames} 2s infinite;
+    content: "";
+  }
+`;
+
+// const loadingData = [
+//   {
+//     title: "Loading..",
+//     seeds: [
+//       {},
+//       {
+//         id: 1,
+//       },
+//       {},
+//       {
+//         id: 1,
+//       },
+//     ],
+//   },
+//   {
+//     title: "Loading..",
+//     seeds: [...new Array(2)].fill({
+//       id: 1,
+//     }),
+//   },
+//   {
+//     title: "Loading..",
+//     seeds: [...new Array(1)].fill({
+//       id: 1,
+//     }),
+//   },
+// ];
+
+export const RenderLoadingSeed = ({ seed, breakpoint }) => {
   return (
-    <Seed
-      // style={{
-      //   minWidth: 175,
-      //   fontSize: 11,
-      // }}
-      mobileBreakpoint={breakpoint}
-      className="test"
-    >
-      <SeedItem className="skeleton-item">
+    <Seed mobileBreakpoint={breakpoint}>
+      <StyledSkeletonItem>
         <div>
           {/* you can use height instead of adding a dot also :O */}
-          <SeedTeam>.</SeedTeam>
-          <SeedTeam>.</SeedTeam>
+          <SeedTeam>Loading...</SeedTeam>
+          <SeedTeam>Loading...</SeedTeam>
         </div>
-      </SeedItem>
+      </StyledSkeletonItem>
       <SeedTime mobileBreakpoint={breakpoint} style={{ fontSize: 9 }}>
         {seed.date}
       </SeedTime>
     </Seed>
-  )
-}
+  );
+};
 
 const LoadingBracket = () => {
   return (
     <Bracket rounds={loadingData} renderSeedComponent={RenderLoadingSeed} />
-  )
-}
+  );
+};
 
-export default LoadingBracket
+export default LoadingBracket;

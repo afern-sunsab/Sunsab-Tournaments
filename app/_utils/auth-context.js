@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
 import {
 	signInWithPopup,
 	signOut,
@@ -12,7 +12,7 @@ import {
 import { auth } from "./firebase";
 import { getUser } from "./firebase_services";
 
-const AuthContext = createContext();
+const AuthContext = createContext(undefined);
 
 export const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(null);

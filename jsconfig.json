@@ -1,10 +1,12 @@
 {
-	"compilerOptions": {
+  "compilerOptions": {
     "jsx": "react",
-	  "baseUrl": ".",
-	  "paths": {
-		"@utils/*": ["app/_utils/*"],
-		"@components/*": ["app/components/*"]
-	  }
-	}
-  }
+    "baseUrl": ".",
+    "paths": {
+      "@utils/*": ["app/_utils/*"],
+      "@components/*": ["app/components/*"]
+    }
+  },
+  "exclude": ["node_modules", "**/node_modules/*"],
+  "include": ["**/*.js", "**/*.jsx"]
+}
