@@ -31,8 +31,8 @@ export default function Page() {
     useEffect(() => {
         const fetchBrackets = async () => {
             const data = await getObjects("brackets");
-			console.log("Brackets:")
-			console.log(data);
+			//console.log("Brackets:")
+			//console.log(data);
 			setBrackets(data);
         }
         fetchBrackets();
@@ -55,15 +55,15 @@ export default function Page() {
 	}
 
 	const handleBracketToFirestore = async (bracketID) => {
-		console.log("RTDBTEST: Sending bracket to Firestore.");
-		console.log("RTDBTEST: Bracket ID: " + bracketID);
-		console.log("RTDBTEST: Choosing bracket: " + chosenBracket);
+		//console.log("RTDBTEST: Sending bracket to Firestore.");
+		//console.log("RTDBTEST: Bracket ID: " + bracketID);
+		//console.log("RTDBTEST: Choosing bracket: " + chosenBracket);
 
 		//const bracket = brackets.find(b => b.docId === bracketID);
 
 		if (realtimeBracket) {
-			console.log("RTDBTEST: Bracket found, sending to Firestore.");
-			console.log(realtimeBracket)
+			//console.log("RTDBTEST: Bracket found, sending to Firestore.");
+			//console.log(realtimeBracket)
 			await sendBracketToFirestore(realtimeBracket);
 			console.log("RTDBTEST: Bracket sent to Firestore.");
 		}
@@ -72,12 +72,12 @@ export default function Page() {
 	const handleChosenBracket = async (docID) => {
 		if (docID === "") {
 			setChosenBracket(null);
-			console.log("Chosen bracket: null");
+			//console.log("Chosen bracket: null");
 			return;
 		}
 		else
 			setChosenBracket(docID);
-		console.log("Chosen bracket: " + docID);
+		//console.log("Chosen bracket: " + docID);
 
 		//Check if the bracket exists within RTDB
 		/*const bracketRef = ref(rtdb, `brackets/${docID}`);
@@ -89,9 +89,9 @@ export default function Page() {
 			console.log("Bracket does not exist in RTDB.");
 		}*/
 		if (await isBracketInRTDB(docID)) {
-			console.log("Bracket already exists in RTDB.");
+			//console.log("Bracket already exists in RTDB.");
 			const newBracket = await getBracketFromRTDB(docID);
-			console.log(newBracket);
+			//console.log(newBracket);
 			setRealtimeBracket(newBracket);
 
 			//Set up a listener for the bracket
@@ -108,8 +108,8 @@ export default function Page() {
 				setRealtimeBracket(data);
 			});
 		} else {
-			console.log("Bracket does not exist in RTDB.");
-			setRealtimeBracket(null);
+			//console.log("Bracket does not exist in RTDB.");
+			//setRealtimeBracket(null);
 		}
 	}
 
@@ -122,9 +122,9 @@ export default function Page() {
 		const roundNo = parseInt(round.replace("round", ""));
 		const matchNo = parseInt(match.replace("match", ""));
 		const playerNo = parseInt(player.replace("player", ""));
-		console.log("Round: " + roundNo);
-		console.log("Match: " + matchNo);
-		console.log("Player: " + playerNo);
+		//console.log("Round: " + roundNo);
+		//console.log("Match: " + matchNo);
+		//console.log("Player: " + playerNo);
 
 		await declareWinner(newBracket, roundNo, matchNo, playerNo);
 	}

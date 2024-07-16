@@ -237,8 +237,8 @@ export const sendBracketToFirestore = async (bracket) => {
 			}));
 		  }));*/
 		bracketCopy = await convertBracketToUserRefs(bracketCopy);
-		console.log("Bracket copy:")
-		console.log(bracketCopy);
+		//console.log("Bracket copy:")
+		//console.log(bracketCopy);
 		await updateBracket(bracketCopy, true);
 	}
 	else
@@ -301,8 +301,8 @@ export const createBracketListener = async (bracket, callback) => {
 		}
 		const data = snapshot.val();
 		const bracketData = await convertBracketToUserData(data);
-		console.log("BRACKET_SERVICES: Bracket updated in RTDB.");
-		console.log(bracketData);
+		//console.log("BRACKET_SERVICES: Bracket updated in RTDB.");
+		//console.log(bracketData);
 		callback(bracketData);
 	});
 }

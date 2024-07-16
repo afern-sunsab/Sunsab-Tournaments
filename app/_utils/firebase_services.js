@@ -130,7 +130,7 @@ export const parseDocID = (doc) => {
 //Sort of still-used function to get a user document from the database
 //Uses the uid from Firebase Auth to find the user document
 export const getUser = async (uid) => {
-	console.log(`Fetching user ${uid}`);
+	//console.log(`Fetching user ${uid}`);
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const object = document.docs.map(doc => ({ docId: doc.id, ...doc.data()}))[0];
 	//console.log(`Fetched user ${object.name} with these attributes${object}`);
