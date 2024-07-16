@@ -59,10 +59,12 @@ export default function Page() {
 		console.log("RTDBTEST: Bracket ID: " + bracketID);
 		console.log("RTDBTEST: Choosing bracket: " + chosenBracket);
 
-		const bracket = brackets.find(b => b.docId === bracketID);
+		//const bracket = brackets.find(b => b.docId === bracketID);
 
-		if (bracket) {
-			await sendBracketToFirestore(bracket);
+		if (realtimeBracket) {
+			console.log("RTDBTEST: Bracket found, sending to Firestore.");
+			console.log(realtimeBracket)
+			await sendBracketToFirestore(realtimeBracket);
 			console.log("RTDBTEST: Bracket sent to Firestore.");
 		}
 	};

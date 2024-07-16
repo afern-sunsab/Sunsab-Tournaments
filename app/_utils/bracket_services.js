@@ -59,14 +59,15 @@ export const createBracket = async (bracket) => {
 
 // Function to update a bracket
 // "bracket" is a JavaScript object representing a bracket document
-export const updateBracket = async (bracket) => {
+// "bypassRTDB" is a boolean that determines whether the bracket should be updated in Firestore, regardless of whether it is in the RTDB
+export const updateBracket = async (bracket, bypassRTDB = false) => {
 	//const { docId, ...bracketPrunedDocID } = bracket;
 
 	//Merge default data with provided data, in case structure has changed
 	const updatedBracket = { ...defaultBracket, ...bracket };
 	//Check to seeif bracket is not in the RTDB
 	const bracketInRTDB = await isBracketInRTDB(bracket);
-	if (bracketInRTDB)
+	if (bracketInRTDB && !bypassRTDB)
 	{
 		//If it is, update the RTDB
 		const bracketCopy = await convertBracketToDocIDs(updatedBracket);
@@ -238,7 +239,7 @@ export const sendBracketToFirestore = async (bracket) => {
 		bracketCopy = await convertBracketToUserRefs(bracketCopy);
 		console.log("Bracket copy:")
 		console.log(bracketCopy);
-		await updateBracket(bracketCopy);
+		await updateBracket(bracketCopy, true);
 	}
 	else
 	{
@@ -293,6 +294,11 @@ export const createBracketListener = async (bracket, callback) => {
 	const bracketDocId = parseDocID(bracket);
 	const bracketRef = ref(rtdb, `brackets/${bracketDocId}`);
 	return onValue(bracketRef, async (snapshot) => {
+		if (!snapshot.exists()) {
+			console.log("BRACKET_SERVICES: Bracket does not exist in RTDB. Closing listener.");
+			callback(null);
+			return;
+		}
 		const data = snapshot.val();
 		const bracketData = await convertBracketToUserData(data);
 		console.log("BRACKET_SERVICES: Bracket updated in RTDB.");
