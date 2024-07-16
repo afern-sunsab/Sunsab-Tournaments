@@ -2,7 +2,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { getTournaments, updateTournament, getUser, getUserRef } from "@utils/firebase_services"
-import { getAllTournaments } from "@utils/tournament_services"
+import { getAllTournaments, getTournamentByDocId } from "@utils/tournament_services"
 import { useUserAuth } from "@utils/auth-context.js";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
 
@@ -16,6 +16,11 @@ export default function Page() {
             //const data = await getTournaments();
 			const data = await getAllTournaments();
             setTournaments(data);
+
+			//Test
+			const testTourna = await getTournamentByDocId("cFLjnFeCNohqWYcGIRNL");
+			console.log("Test Tournament:")
+			console.log(testTourna);
         }
         fetchTournaments();
     }, []);

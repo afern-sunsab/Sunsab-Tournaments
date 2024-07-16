@@ -1,6 +1,6 @@
 import { doc, getDoc, query } from "firebase/firestore";
-import { getObject, getUserRefs } from "./firebase_services";
-import {getObjectByDocID, getObjects, createObject, updateObject} from "./firebase_services";
+import { getObject, getObjectByDocID, getUserRefs } from "./firebase_services";
+import {getObjects, createObject, updateObject} from "./firebase_services";
 
 //Default user data structure
 const defaultUser = {
@@ -12,7 +12,7 @@ const defaultUser = {
 };
 
 export const getUserByDocId = async (docId) => {
-	const user = await getObject("users", docId);
+	const user = await getObjectByDocID("users", docId);
 	//Add returned data to default data structure
 	const returnUser = { ...defaultUser, ...user };
 	return returnUser;

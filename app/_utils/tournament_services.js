@@ -1,6 +1,6 @@
 //import { updateTournament, getTournament, getUserRefs, getUser } from "./firebase_services";
 import { get } from "firebase/database";
-import {getObject, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects} from "./firebase_services";
+import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects} from "./firebase_services";
 
 export const defaultTournament = {
 	id: 0,
@@ -19,7 +19,7 @@ export const defaultTournament = {
 }
 
 export const getTournamentByDocId = async (docId) => {
-	const tournament = await getObject("tournaments", docId);
+	const tournament = await getObjectByDocID("tournaments", docId);
 	//Add returned data to default data structure
 	const returnTournament = { ...defaultTournament, ...tournament };
 
