@@ -18,6 +18,18 @@ export const defaultTournament = {
 	thumbnail: ""
 }
 
+export const getTournamentByDocId = async (docId) => {
+	const tournament = await getObject("tournaments", docId);
+	//Add returned data to default data structure
+	const returnTournament = { ...defaultTournament, ...tournament };
+	return returnTournament;
+}
+
+export const getAllTournaments = async (queryData = null) => {
+	const tournaments = await getObjects("tournaments", queryData);
+	return tournaments;
+}
+
 export const createTournament = async (tournament) => {
 	//Merge default data with provided data
 	const newTournament = { ...defaultTournament, ...tournament };

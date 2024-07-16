@@ -1,9 +1,6 @@
 import { doc, getDoc, query } from "firebase/firestore";
-import { updateTournament, getTournament, getUserRefs } from "./firebase_services";
+import { getObject, getUserRefs } from "./firebase_services";
 import {getObjectByDocID, getObjects, createObject, updateObject} from "./firebase_services";
-//Kind of dumb import to pass query to getObjects
-import { where } from "firebase/database";
-import { db } from "./firebase";
 
 //Default user data structure
 const defaultUser = {
@@ -13,6 +10,19 @@ const defaultUser = {
 	uid: "",
 	pronouns: "",
 };
+
+export const getUserByDocId = async (docId) => {
+	const user = await getObject("users", docId);
+	//Add returned data to default data structure
+	const returnUser = { ...defaultUser, ...user };
+	return returnUser;
+}
+
+//Try not to actually get all the users, it's a lot of data
+export const getAllUsers = async (queryData = null) => {
+	const users = await getObjects("users", queryData);
+	return users;
+}
 
 export const createUser = async (user) => {
 	

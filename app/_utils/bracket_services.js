@@ -1,4 +1,4 @@
-import { createObject, updateObject, getUserRefs, createRef, parseDocID } from "./firebase_services";
+import { createObject, updateObject, getObject, getObjects, getUserRefs, createRef, parseDocID } from "./firebase_services";
 //RTDB functions
 import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
@@ -13,6 +13,25 @@ export const defaultBracket = {
 	matches: [],
 	capacity: 0
 };
+
+// Function to get a bracket by its document ID
+export const getBracketByDocId = async (docId) =>
+{
+	const bracketData = getObject("brackets", docId);
+	//Add returned data to default bracket structure
+	const returnBracket = { ...defaultBracket, ...bracketData };
+	return returnBracket;
+}
+
+// Function to get all brackets
+// "queryData" is an optional object containing query data
+// queryData format is [field, operator, value]
+// Example: ["name", "==", "My Bracket"]
+export const getAllBrackets = async (queryData = null) =>
+{
+	const brackets = await getObjects("brackets", queryData);
+	return brackets;
+}
 
 // Function to create a new bracket
 // "bracket" is a JavaScript object representing a bracket document
@@ -311,7 +330,7 @@ export const declareWinner = async (bracket, round, match, winner) => {
 }
 
 //Function to convert a bracket's user references to user data
-//Accepts a bracket object with user references
+//Accepts a bracket object with user references or reference strings
 //Returns a bracket object with user data as a javascript object instead of references
 export const convertBracketToUserData = async (bracket) => {
 	//console.log("Converting bracket to user data:")
