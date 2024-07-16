@@ -1,6 +1,8 @@
-import React from "react"
-import LosingBracket from "./losing-bracket"
-import WiningBracket from "./winning-bracket"
+"use client";
+
+import React from "react";
+import LosingBracket from "./losing-bracket";
+import WiningBracket from "./winning-bracket";
 
 const wining = [
   {
@@ -11,20 +13,20 @@ const wining = [
         id: 1,
         date: new Date().toDateString(),
         teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
+          { id: 1, name: "The Leons", score: 2 },
+          { id: 3, name: "Kitties", score: 6 },
+        ],
       },
       {},
       {
         id: 1,
         date: new Date().toDateString(),
         teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
-      }
-    ]
+          { id: 1, name: "The Leons", score: 2 },
+          { id: 3, name: "Kitties", score: 6 },
+        ],
+      },
+    ],
   },
   {
     title: "Round 2",
@@ -33,9 +35,9 @@ const wining = [
       date: new Date().toDateString(),
       teams: [
         { id: 1, name: "The Leons", score: 2 },
-        { id: 3, name: "Kitties", score: 6 }
-      ]
-    })
+        { id: 3, name: "Kitties", score: 6 },
+      ],
+    }),
   },
   {
     title: "Round 3",
@@ -44,11 +46,11 @@ const wining = [
       date: new Date().toDateString(),
       teams: [
         { id: 1, name: "The Leons", score: 2 },
-        { id: 3, name: "Kitties", score: 6 }
-      ]
-    })
-  }
-]
+        { id: 3, name: "Kitties", score: 6 },
+      ],
+    }),
+  },
+];
 const losing = [
   {
     title: "Round 1",
@@ -58,11 +60,11 @@ const losing = [
         id: 1,
         date: new Date().toDateString(),
         teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
-      }
-    ]
+          { id: 1, name: "The Leons", score: 2 },
+          { id: 3, name: "Kitties", score: 6 },
+        ],
+      },
+    ],
   },
   {
     title: "Round 2",
@@ -71,11 +73,11 @@ const losing = [
         id: 1,
         date: new Date().toDateString(),
         teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
-      }
-    ]
+          { id: 1, name: "The Leons", score: 2 },
+          { id: 3, name: "Kitties", score: 6 },
+        ],
+      },
+    ],
   },
   {
     title: "Round 3",
@@ -84,26 +86,13 @@ const losing = [
         id: 1,
         date: new Date().toDateString(),
         teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
-      }
-    ]
+          { id: 1, name: "The Leons", score: 2 },
+          { id: 3, name: "Kitties", score: 6 },
+        ],
+      },
+    ],
   },
-  {
-    title: "Round 4",
-    seeds: [
-      {
-        id: 1,
-        date: new Date().toDateString(),
-        teams: [
-          { id: 1, name: "The Leons", score: 2 }
-          // { id: 3, name: 'Kitties', score: 6 },
-        ]
-      }
-    ]
-  }
-]
+];
 
 const DoubleElimination = () => {
   return (
@@ -114,7 +103,7 @@ const DoubleElimination = () => {
 
       <LosingBracket rounds={losing} />
     </div>
-  )
-}
+  );
+};
 
-export default DoubleElimination
+export default DoubleElimination;

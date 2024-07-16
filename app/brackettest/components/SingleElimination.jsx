@@ -1,11 +1,11 @@
 "use client";
 
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@utils/firebase";
 import React, { useEffect, useState } from "react";
 import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets";
-import LoadingBracket, { RenderLoadingSeed } from "./loading";
-import { getBracket } from "@utils/firebase_services";
+import { RenderLoadingSeed } from "./loading";
+import Link from "next/link";
 
 export default function SingleElimination() {
   const [brackets, setBrackets] = useState();
@@ -14,12 +14,11 @@ export default function SingleElimination() {
     async function fetchData() {
       const bracketRef = doc(db, "brackets", "53wINWQ1vcybxutgAHtb");
       const bracketSnap = await getDoc(bracketRef);
+      setBrackets(bracketSnap.data());
       console.log(bracketSnap.data());
     }
     fetchData();
   }, []);
-
-  // setBrackets;
 
   const bracket1 = brackets?.[0];
 
@@ -83,8 +82,8 @@ export default function SingleElimination() {
         id: 119,
         date: new Date().toDateString(),
         teams: [
-          { id: 781, name: "The Leons", score: 2 },
-          { id: 943, name: "Kitties", score: 6 },
+          { id: 781, name: "The Leons", score: "" },
+          { id: 943, name: "Kitties", score: "" },
         ],
       }),
     },
@@ -94,11 +93,17 @@ export default function SingleElimination() {
     return (
       <Seed mobileBreakpoint={breakpoint}>
         <SeedItem style={{ width: "100%" }}>
-          <div>
-            <SeedTeam>{seed.teams?.[0].name || "-----------"}</SeedTeam>
+          <Link href="/">
+            <SeedTeam>
+              {seed.teams?.[0].name || "-----------"} -{" "}
+              {seed.teams?.[0].score || " "}
+            </SeedTeam>
             <div style={{ height: 1, backgroundColor: "#707070" }}></div>
-            <SeedTeam>{seed.teams?.[1]?.name || "-----------"}</SeedTeam>
-          </div>
+            <SeedTeam>
+              {seed.teams?.[1].name || "-----------"} -{" "}
+              {seed.teams?.[1].score || " "}
+            </SeedTeam>
+          </Link>
         </SeedItem>
         <SeedTime mobileBreakpoint={breakpoint} style={{ fontSize: 9 }}>
           {seed.date}
