@@ -79,19 +79,6 @@ const losing = [
       },
     ],
   },
-  {
-    title: "Round 3",
-    seeds: [
-      {
-        id: 1,
-        date: new Date().toDateString(),
-        teams: [
-          { id: 1, name: "The Leons", score: 2 },
-          { id: 3, name: "Kitties", score: 6 },
-        ],
-      },
-    ],
-  },
 ];
 
 const DoubleElimination = () => {
