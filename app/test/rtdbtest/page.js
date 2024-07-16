@@ -6,7 +6,7 @@ import { useUserAuth } from "@utils/auth-context.js";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
 import { getUserTournaments } from "@utils/user_services";
 import { getObjects } from "@utils/firebase_services";
-import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener, convertBracketToUserData, updateBracket } from "@utils/bracket_services";
+import { sendBracketToFirestore, sendBracketToRTDB, isBracketInRTDB, getBracketFromRTDB, createBracketListener, convertBracketToUserData, updateBracket, declareWinner } from "@utils/bracket_services";
 import { rtdb } from "@utils/firebase";
 import { ref, get, set, onValue } from "firebase/database";
 
@@ -113,9 +113,18 @@ export default function Page() {
 
 	const handleWinner = async (round, match, player) => {
 		const newBracket = { ...realtimeBracket };
-		newBracket.matches[round][match][player].score += 1;
+		/*newBracket.matches[round][match][player].score += 1;
 		setRealtimeBracket(newBracket);
-		updateBracket(newBracket);
+		updateBracket(newBracket);*/
+		console.log("RTDBTEST: Declaring winner.");
+		const roundNo = parseInt(round.replace("round", ""));
+		const matchNo = parseInt(match.replace("match", ""));
+		const playerNo = parseInt(player.replace("player", ""));
+		console.log("Round: " + roundNo);
+		console.log("Match: " + matchNo);
+		console.log("Player: " + playerNo);
+
+		await declareWinner(newBracket, roundNo, matchNo, playerNo);
 	}
 
     return (
@@ -152,7 +161,11 @@ export default function Page() {
 										</div>
 										: "Undefined Player 1"}
 										{match.player2.user ?
-										<div>{match.player2.user.name} : {match.player2.score}</div>
+										<div>
+											<button onClick={() => handleWinner(roundName, matchName, "player2")}>
+												{match.player2.user.name} : {match.player2.score}
+											</button>
+										</div>
 										: "Undefined Player 2"}
 									</div>
 								))}

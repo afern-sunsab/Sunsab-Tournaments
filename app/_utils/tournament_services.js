@@ -1,6 +1,6 @@
 //import { updateTournament, getTournament, getUserRefs, getUser } from "./firebase_services";
 import { get } from "firebase/database";
-import {getObject, getObjects, createObject, updateObject, createRef, getUserRefs} from "./firebase_services";
+import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects} from "./firebase_services";
 
 export const defaultTournament = {
 	id: 0,
@@ -19,14 +19,23 @@ export const defaultTournament = {
 }
 
 export const getTournamentByDocId = async (docId) => {
-	const tournament = await getObject("tournaments", docId);
+	const tournament = await getObjectByDocID("tournaments", docId);
 	//Add returned data to default data structure
 	const returnTournament = { ...defaultTournament, ...tournament };
+
+	//Convert entrants array to array of user objects
+	returnTournament.entrants = await getUserObjects(returnTournament.entrants);
+
 	return returnTournament;
 }
 
 export const getAllTournaments = async (queryData = null) => {
 	const tournaments = await getObjects("tournaments", queryData);
+
+	//Convert entrants array to array of user objects
+	for (let i = 0; i < tournaments.length; i++) {
+		tournaments[i].entrants = await getUserObjects(tournaments[i].entrants);
+	}
 	return tournaments;
 }
 

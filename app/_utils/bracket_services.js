@@ -332,8 +332,25 @@ export const declareWinner = async (bracket, round, match, winner) => {
 		bracketCopy.completed = true;
 	}
 	else{
+		//If the next round doesn't exist, create it
+		if (!bracketCopy.matches[nextRound]) {
+			bracketCopy.matches[nextRound] = {};
+		}
+		//If the next match doesn't exist, create it
+		if (!bracketCopy.matches[nextRound][nextMatch]) {
+			bracketCopy.matches[nextRound][nextMatch] = {
+				player1: {
+					score: 0,
+					user: null
+				},
+				player2: {
+					score: 0,
+					user: null
+				}
+			};
+		}
 		//Move the winner to the next round
-		bracketCopy.matches[nextRound][nextMatch]["player" + (match % 2 + 1)].user = winnerData;
+		bracketCopy.matches[nextRound][nextMatch]["player" + (2 - (match % 2))].user = winnerData;
 	}
 	
 	//Update the bracket
