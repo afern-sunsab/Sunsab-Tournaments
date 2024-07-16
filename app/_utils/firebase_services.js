@@ -91,7 +91,28 @@ export const getUserRefs = async (user) => {
 	else if (user.docId)
 		return doc(db, "users", user.docId);
 	return user;
+}
 
+//Function to convert user reference to user object
+export const getUserObjects = async (user) => {
+	if (Array.isArray(user)) {
+		//Only convert entrant data to object if it is not already an object
+		const userObjects = await Promise.all(user.map(async (user) => {
+			if (!user.docId) {
+				const userDoc = await getDoc(user);
+				const userData = {docId: userDoc.id, ...userDoc.data()};
+				return userData;
+			}
+			return user;
+		}));
+		return userObjects;
+	}
+	else if (!user.docId) {
+		const userDoc = await getDoc(user);
+		const userData = {docId: userDoc.id, ...userDoc.data()};
+		return userData;
+	}
+	return user;
 }
 
 //Little stock function to pull docID if passed a document

@@ -2,6 +2,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { getTournaments, updateTournament, getUser, getUserRef } from "@utils/firebase_services"
+import { getAllTournaments } from "@utils/tournament_services"
 import { useUserAuth } from "@utils/auth-context.js";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
 
@@ -12,7 +13,8 @@ export default function Page() {
 
     useEffect(() => {
         const fetchTournaments = async () => {
-            const data = await getTournaments();
+            //const data = await getTournaments();
+			const data = await getAllTournaments();
             setTournaments(data);
         }
         fetchTournaments();
