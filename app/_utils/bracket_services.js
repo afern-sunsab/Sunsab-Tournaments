@@ -1,10 +1,11 @@
-import { createObject, updateObject, getObject, getObjects, getUserRefs, createRef, parseDocID } from "./firebase_services";
+import { createObject, updateObject, getObject, getObjects, getObjectByDocID, getUserRefs, createRef, parseDocID } from "./firebase_services";
 //RTDB functions
 import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
 import { db } from "./firebase";
 import { doc } from "firebase/firestore";
 import { getUserData } from "./user_services";
+import { getDoc } from "firebase/firestore";
 
 //Default data structure for a bracket
 export const defaultBracket = {
@@ -21,6 +22,17 @@ export const getBracketByDocId = async (docId) =>
 	//Add returned data to default bracket structure
 	const returnBracket = { ...defaultBracket, ...bracketData };
 	return returnBracket;
+}
+
+export const getTournamentBrackets = async (tournament) => {
+	const brackets = []
+	if (Array.isArray(tournament.brackets)) {
+		await Promise.all(tournament.brackets.map(async (bracketRef) => {
+			const bracket = await getObjectByDocID("brackets", bracketRef.id);
+			brackets.push(bracket);
+		}));
+	}
+	return brackets;
 }
 
 // Function to get all brackets

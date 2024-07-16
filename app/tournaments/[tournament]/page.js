@@ -16,7 +16,7 @@ export default function Page({ params }) {
 			setTournament(data);
 		};
 		fetchTournament();
-	}, []);
+	}, [params]);
 
 	const handleJoin = async () => {
 		await joinTournament(tournament, user);
