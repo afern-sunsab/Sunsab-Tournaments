@@ -16,9 +16,15 @@ export const defaultBracket = {
 };
 
 // Function to get a bracket by its document ID
-export const getBracketByDocId = async (docId) =>
+export const getBracketByDocId = async (docId, bypassRTDB = false) =>
 {
-	const bracketData = getObject("brackets", docId);
+	let bracketData = null;
+	//If bracket is in the RTDB, get that instead
+	const bracketInRTDB = bypassRTDB ? false : await isBracketInRTDB(docId);
+	if (bracketInRTDB)
+		bracketData = await getBracketFromRTDB(docId);
+	else
+		bracketData = await getObjectByDocID("brackets", docId);
 	//Add returned data to default bracket structure
 	const returnBracket = { ...defaultBracket, ...bracketData };
 	return returnBracket;
@@ -28,7 +34,7 @@ export const getTournamentBrackets = async (tournament) => {
 	const brackets = []
 	if (Array.isArray(tournament.brackets)) {
 		await Promise.all(tournament.brackets.map(async (bracketRef) => {
-			const bracket = await getObjectByDocID("brackets", bracketRef.id);
+			const bracket = await getBracketByDocID(bracketRef.id);
 			brackets.push(bracket);
 		}));
 	}
