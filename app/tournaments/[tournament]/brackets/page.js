@@ -1,14 +1,15 @@
 "use client"
 
-import { getTournamentBrackets } from "@utils/bracket_services";
-import { getTournament } from "@utils/firebase_services";
+import { getTournamentBrackets, convertBrackets } from "@utils/bracket_services";
+import { getTournament, timestampToDate } from "@utils/firebase_services";
 import { useState, useEffect } from "react";
-import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from "react-brackets";
+import SingleElimination from "@components/brackets/single_elimination/single-elim";
 // import LoadingBracket, { RenderLoadingSeed } from "./loading";
 
 export default function Page({ params }){
 	const [tournament, setTournament] = useState();
 	const [brackets, setBrackets] = useState([]);
+	const [convertedBrackets, setConvertedBrackets] = useState([])
 
 	useEffect(() => {
 		const fetchTournament = async () => {
@@ -30,26 +31,35 @@ export default function Page({ params }){
 		fetchBrackets()
 	}, [tournament]);
 
+    useEffect(() => {
+        if (brackets.length > 0) {
+            const converted = convertBrackets(brackets);
+			console.log(converted);
+            setConvertedBrackets(converted);
+        }
+    }, [brackets]);
+
 	return(
 		<main className="bg-white text-black p-6">
 			{tournament ? (
 				<div>
-					<h1>{tournament.name} Brackets</h1>
+					<h1 className="text-2xl font-bold mb-4">{tournament.name} Brackets</h1>
 					{brackets.length > 0 ? (
 						<div>
-							{brackets.map((bracket) => (
-								<div>
-									<h1>{bracket.name}</h1>
-									<h2>Bracket Type: {bracket.type}</h2>
+							{convertedBrackets.map((bracket, index) => (
+								<div key={index} className="border rounded-md p-4 mb-4 hover:bg-gray-100">
+									<h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
+									<h3 className="text-lg mb-4">Bracket Type: {bracket.type}</h3>
+									<SingleElimination rounds={bracket.rounds} />
 								</div>
 							))}
-						</div>	
+						</div>
 					) : (
-						<div>No brackets</div>
+						<div className="text-gray-600">No brackets</div>
 					)}
 				</div>
 			) : (
-				<div>No tournament</div>
+				<div className="text-gray-600">No tournament</div>
 			)}
 		</main>
 	)

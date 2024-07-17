@@ -1,4 +1,4 @@
-import { createObject, updateObject, getObject, getObjects, getObjectByDocID, getUserRefs, createRef, parseDocID } from "./firebase_services";
+import { createObject, updateObject, getObject, getObjects, getObjectByDocID, getUserRefs, createRef, parseDocID, timestampToDate } from "./firebase_services";
 //RTDB functions
 import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
@@ -34,7 +34,7 @@ export const getTournamentBrackets = async (tournament) => {
 	const brackets = []
 	if (Array.isArray(tournament.brackets)) {
 		await Promise.all(tournament.brackets.map(async (bracketRef) => {
-			const bracket = await getBracketByDocID(bracketRef.id);
+			const bracket = await getBracketByDocId(bracketRef.id);
 			brackets.push(bracket);
 		}));
 	}
@@ -448,3 +448,43 @@ export const convertBracketToDocIDs = async (bracket) => {
 	  }));
 	return bracketCopy;
 }
+
+export const convertBrackets = (brackets) => {
+	const convertedBrackets = brackets.map((bracket) => {
+		const rounds = Object.keys(bracket.matches).map((roundKey, roundIndex) => {
+			const matches = Object.keys(bracket.matches[roundKey]).map((matchKey, matchIndex) => {
+				const match = bracket.matches[roundKey][matchKey];
+
+				return {
+					id: matchIndex,
+					date: match.date ? timestampToDate(match.date) : new Date().toISOString(),
+					teams: [
+						{
+							id: match.player1.user ? match.player1.user.docId : null,
+							name: match.player1.user ? match.player1.user.name : null,
+							score: match.player1.user ? match.player1.score : null
+						},
+						{
+							id: match.player2.user ? match.player2.user.docId : null,
+							name: match.player2.user ? match.player2.user.name : null,
+							score: match.player2.user ? match.player2.score : null
+						}
+					]
+				};
+			});
+
+			return {
+				title: `Round ${roundIndex + 1}`,
+				seeds: matches
+			};
+		});
+
+		return {
+			name: bracket.name,
+			type: bracket.type,
+			rounds: rounds
+		};
+	});
+
+	return convertedBrackets;
+};
