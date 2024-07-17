@@ -1,6 +1,6 @@
 //import { updateTournament, getTournament, getUserRefs, getUser } from "./firebase_services";
 import { get } from "firebase/database";
-import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects} from "./firebase_services";
+import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects, getHighestID} from "./firebase_services";
 
 export const defaultTournament = {
 	id: 0,
@@ -43,6 +43,9 @@ export const createTournament = async (tournament) => {
 	//Merge default data with provided data
 	const newTournament = { ...defaultTournament, ...tournament };
 
+	//Get the ID number for the new tournament
+	newTournament.id = await getHighestID("tournaments") + 1;
+
 	//Create the tournament document
 	const document = await createObject("tournaments", newTournament);
 
@@ -57,6 +60,11 @@ export const updateTournament = async (tournament) => {
 	//Merge default data with provided data, in case structure has changed
 	//const updatedTournament = { ...defaultTournament, ...tournamentPrunedDocID };
 	const updatedTournament = { ...defaultTournament, ...tournament };
+
+	//If the document lacks an ID number, get the highest ID number and increment it
+	if (updatedTournament.id <= 0) {
+		updatedTournament.id = await getHighestID("tournaments") + 1;
+	}
 
 	//Convert entrants array to array of user references
 	updatedTournament.entrants = await getUserRefs(updatedTournament.entrants);

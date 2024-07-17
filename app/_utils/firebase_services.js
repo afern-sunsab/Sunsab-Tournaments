@@ -1,7 +1,7 @@
 "use client"
 //NOTE: Avoid using functions from this file aside from get/create/updateObject functions, getUserRef, and dateToTimestamp/timestampToDate
 //Preference goes to functions in user/bracket/tournament_services, which will be more modular and easier to use
-import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Timestamp } from "firebase/firestore";
+import { collection, doc,getDoc, getDocs, updateDoc, addDoc, query, where, Timestamp, orderBy, limit } from "firebase/firestore";
 import { db } from "../_utils/firebase";
 
 //Basic Firestore functions, use these with other services. Try to avoid using these directly in components
@@ -138,6 +138,23 @@ export const getUser = async (uid) => {
 	//console.log(object);
 	return object;
 }
+
+//Gets the highest ID number from a given collection
+//Takes in a string for the collection name
+//Returns the highest ID number + 1
+export const getHighestID = async (type) => {
+	//Cool hack to retrieve the document with the highest ID
+	//Queries Firestore for the data sorted by id in descending order, and only retrieves the first document
+	//const documents = await getDocs(query(collection(db, type).orderBy("id", "desc").limit(1)));
+	const documents = await getDocs(query(collection(db, type), orderBy("id", "desc"), limit(1)));
+	let newid = 0;
+	if (documents.docs.length > 0 && documents.docs[0].data().id) {
+		newid = documents.docs[0].data().id;
+	}
+	console.log(`Highest ID in ${type} is ${newid}`);
+	return newid;
+}
+
 
 //----------------
 //Deprecated functions

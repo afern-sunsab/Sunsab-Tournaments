@@ -1,4 +1,4 @@
-import { createObject, updateObject, getObject, getObjects, getObjectByDocID, getUserRefs, createRef, parseDocID, timestampToDate } from "./firebase_services";
+import { createObject, updateObject, getObject, getObjects, getObjectByDocID, getUserRefs, createRef, parseDocID, timestampToDate, getHighestID } from "./firebase_services";
 //RTDB functions
 import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
@@ -58,6 +58,11 @@ export const createBracket = async (bracket) => {
 	const newBracket = { ...defaultBracket, ...bracket };
 	// Create the bracket
 	const document = await createObject("brackets", newBracket);
+	//If the bracket's id is 0, create a new id number
+	if (newBracket.id <= 0)
+	{
+		newBracket.id = await getHighestID("brackets") + 1;
+	}
 	//Add the document ID to the bracket object
 	newBracket.docId = document.id;
 	return newBracket;

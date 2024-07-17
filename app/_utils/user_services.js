@@ -1,6 +1,5 @@
-import { doc, getDoc, query } from "firebase/firestore";
 import { getObject, getObjectByDocID, getUserRefs } from "./firebase_services";
-import {getObjects, createObject, updateObject} from "./firebase_services";
+import {getObjects, createObject, updateObject, getHighestID} from "./firebase_services";
 
 //Default user data structure
 const defaultUser = {
@@ -29,6 +28,9 @@ export const createUser = async (user) => {
 	//Merge default data with provided data
 	const newUser = { ...defaultUser, ...user };
 
+	//Create an ID for the new user
+	newUser.id = await getHighestID("users") + 1;
+
 	//Create the user document
 	const document = await createObject("users", newUser);
 
@@ -42,6 +44,12 @@ export const updateUser = async (user) => {
 
 	//Merge default data with provided data, in case structure has changed
 	const updatedUser = { ...defaultUser, ...user };
+
+	//If user's id number is 0, create a new id number
+	if (updatedUser.id <= 0) {
+		updatedUser.id = await getHighestID("users") + 1;
+	}
+	
 	await updateObject("users", updatedUser);
 }
 
