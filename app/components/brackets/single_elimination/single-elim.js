@@ -31,12 +31,12 @@ export default function SingleElimination({ rounds }) {
 					<button onClick={() => setIsOpen(true)}>
 						<SeedTeam>
 							{seed.teams?.[0].name || "-----------"} -{" "}
-							{seed.teams?.[0].score || " "}
+							{seed.teams?.[0].score || "0"}
 						</SeedTeam>
 						<div style={{ height: 1, backgroundColor: "#707070" }}></div>
 						<SeedTeam>
 							{seed.teams?.[1].name || "-----------"} -{" "}
-							{seed.teams?.[1].score || " "}
+							{seed.teams?.[1].score || "0"}
 						</SeedTeam>
 					</button>
 					<Modal

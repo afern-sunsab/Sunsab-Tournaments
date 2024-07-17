@@ -1,7 +1,7 @@
 "use client"
 
 import { getTournamentBrackets, convertBrackets } from "@utils/bracket_services";
-import { getTournament, timestampToDate } from "@utils/firebase_services";
+import { getTournamentByDocId} from "@utils/tournament_services";
 import { useState, useEffect } from "react";
 import SingleElimination from "@components/brackets/single_elimination/single-elim";
 // import LoadingBracket, { RenderLoadingSeed } from "./loading";
@@ -13,7 +13,7 @@ export default function Page({ params }){
 
 	useEffect(() => {
 		const fetchTournament = async () => {
-			const data = await getTournament(params.tournament);
+			const data = await getTournamentByDocId(params.tournament);
 			setTournament(data);
 			console.log(data)
 		}
