@@ -83,7 +83,11 @@ export const updateBracket = async (bracket, bypassRTDB = false) => {
 		await set(bracketRef, bracketCopy);
 	}
 	else
-		await updateObject("brackets", updatedBracket);
+	{
+		//Convert all user data to user references
+		const bracketCopy = await convertBracketToUserRefs(updatedBracket);
+		await updateObject("brackets", bracketCopy);
+	}
 }
 
 // Function to initialize matches
