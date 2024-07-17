@@ -3,6 +3,7 @@
 import { getTournament } from "@utils/firebase_services";
 import { createBracket, defaultBracket } from "@utils/bracket_services";
 import { useState, useEffect } from "react";
+import { updateTournament } from "@utils/tournament_services";
 
 export default function Page({ params }) {
 	const [tournament, setTournament] = useState();
@@ -34,10 +35,14 @@ export default function Page({ params }) {
 	};
 
 	const handleSubmit = async (e) => {
+		e.preventDefault();
 		brackets.forEach(async bracket => {
 			await createBracket(bracket);
 		});
 		alert("Created Brackets")
+		const updatedTournament = { ...tournament, brackets: brackets };
+		await updateTournament(updatedTournament);
+		alert("Updated Tournament with Brackets")
 	};
 
 	return (

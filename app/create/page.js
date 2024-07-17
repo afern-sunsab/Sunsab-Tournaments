@@ -37,7 +37,7 @@ export default function Page() {
 		const converted_event_date = new Date(tournament.event_date);
 		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date, owner: user.docId }
 		const document = await createTournament(newTournament);
-		window.location.href = `/create/${document.id}`;
+		window.location.href = `/create/${document.docId}`;
 	}
 
 	return(

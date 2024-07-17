@@ -41,7 +41,7 @@ export const createObject = async (type, object) => {
 	const document = await addDoc(collection(db, type), object)
 	const objectData = {docId: document.id, ...object};
 	//alert(`Added new ${type} object`)
-	return objectData;
+	return document;
 }
 
 export const updateObject = async (type, updatedObject, confirm = false) => {
