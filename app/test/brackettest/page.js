@@ -1,10 +1,10 @@
 'use client'
 import React from "react"
 import { useState, useEffect } from "react"
-import { getTournaments, updateTournament, getUsers, getUserRef } from "../_utils/firebase_services"
-import { useUserAuth } from "../_utils/auth-context.js";
-import { joinTournament, leaveTournament } from "../_utils/tournament_services";
-import { createBracket, updateBracket, initializeMatches } from "../_utils/bracket_services";
+import { getTournaments, updateTournament, getUsers, getUserRef } from "@utils/firebase_services"
+import { useUserAuth } from "@utils/auth-context.js";
+import { joinTournament, leaveTournament } from "@utils/tournament_services";
+import { createBracket, updateBracket, initializeMatches } from "@utils/bracket_services";
 
 export default function Page() {
     const [tournaments, setTournaments] = useState([]);

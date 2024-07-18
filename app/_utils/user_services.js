@@ -56,6 +56,11 @@ export const updateUser = async (user) => {
 //"getUser" is already defined in firebase_services.js and is used to get a user document by its uid
 //This function is used to get a user document by its docId
 export const getUserData = async (docId) => {
+	console.log("Getting user data for docId: " + docId);
+	if (!docId) {
+		//console.log("No docId provided. Returning default user.");
+		return defaultUser;
+	}
 	const userData = await getObjectByDocID("users", docId);
 	const user = { ...defaultUser, docId, ...userData };
 	return user;

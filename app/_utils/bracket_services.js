@@ -22,9 +22,17 @@ export const getBracketByDocId = async (docId, bypassRTDB = false) =>
 	//If bracket is in the RTDB, get that instead
 	const bracketInRTDB = bypassRTDB ? false : await isBracketInRTDB(docId);
 	if (bracketInRTDB)
+	{
+		//console.log("Bracket is in RTDB. Getting from RTDB.")
 		bracketData = await getBracketFromRTDB(docId);
+	}
 	else
+	{
+		//console.log("Bracket is not in RTDB. Getting from Firestore.")
 		bracketData = await getObjectByDocID("brackets", docId);
+		//Convert user references to user data
+		bracketData = await convertBracketToUserData(bracketData);
+	}
 	//Add returned data to default bracket structure
 	const returnBracket = { ...defaultBracket, ...bracketData };
 	return returnBracket;
@@ -78,20 +86,21 @@ export const updateBracket = async (bracket, bypassRTDB = false) => {
 	const updatedBracket = { ...defaultBracket, ...bracket };
 	//Check to seeif bracket is not in the RTDB
 	const bracketInRTDB = await isBracketInRTDB(bracket);
-	if (bracketInRTDB && !bypassRTDB)
+	if (!bracketInRTDB || bypassRTDB)
 	{
-		//If it is, update the RTDB
+		//Not in RTDB or bypassing RTDB, update Firestore
+		console.log("Bracket is not in RTDB. Updating Firestore.")
+		const bracketCopy = await convertBracketToUserRefs(updatedBracket);
+		await updateObject("brackets", bracketCopy);
+	}
+	else
+	{
+		//Bracket is in RTDB, update RTDB
 		const bracketCopy = await convertBracketToDocIDs(updatedBracket);
 		console.log("Bracket copy being updated to RTDB:")
 		console.log(bracketCopy);
 		const bracketRef = ref(rtdb, `brackets/${bracketCopy.docId}`);
 		await set(bracketRef, bracketCopy);
-	}
-	else
-	{
-		//Convert all user data to user references
-		const bracketCopy = await convertBracketToUserRefs(updatedBracket);
-		await updateObject("brackets", bracketCopy);
 	}
 }
 
@@ -390,10 +399,14 @@ export const convertBracketToUserData = async (bracket) => {
 	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
 		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
 		  if (bracketCopy.matches[round][match].player1.user) {
-			if (typeof bracketCopy.matches[round][match].player1.user === "string")
-				bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user)
-			else
-				bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user.id)
+			//Skip if user is already a user object
+			if (!bracketCopy.matches[round][match].player1.user.docId)
+			{
+				if (typeof bracketCopy.matches[round][match].player1.user === "string")
+					bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user)
+				else
+					bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user.id)
+			}
 			//Test
 			//console.log("Player 1 data:")
 			//console.log(bracketCopy.matches[round][match].player1.user);
@@ -458,6 +471,7 @@ export const convertBracketToDocIDs = async (bracket) => {
 	return bracketCopy;
 }
 
+//Coverts bracket data into a format used by the display module
 export const convertBrackets = (brackets) => {
 	const convertedBrackets = brackets.map((bracket) => {
 		const rounds = Object.keys(bracket.matches).map((roundKey, roundIndex) => {
@@ -469,12 +483,13 @@ export const convertBrackets = (brackets) => {
 					date: match.date ? timestampToDate(match.date) : new Date().toISOString(),
 					teams: [
 						{
-							id: match.player1.user ? match.player1.user.docId : null,
+							//Somewht complicated: If user is a docId string pass that, otherwise if user has a codId value, pass that, otherwise pass null
+							id: match.player1.user ? (typeof match.player1.user === "string" ? match.player1.user : match.player1.user.docId) : null,
 							name: match.player1.user ? match.player1.user.name : null,
 							score: match.player1.user ? match.player1.score : null
 						},
 						{
-							id: match.player2.user ? match.player2.user.docId : null,
+							id: match.player2.user ? (typeof match.player2.user === "string" ? match.player2.user : match.player2.user.docId) : null,
 							name: match.player2.user ? match.player2.user.name : null,
 							score: match.player2.user ? match.player2.score : null
 						}
@@ -494,6 +509,7 @@ export const convertBrackets = (brackets) => {
 			rounds: rounds
 		};
 	});
-
+	//console.log("Converted Brackets:")
+	//console.log(convertedBrackets);
 	return convertedBrackets;
 };
