@@ -23,6 +23,8 @@ export default function Page() {
 			console.log(testTourna);
         }
         fetchTournaments();
+
+		document.title = "Join Test";
     }, []);
 
     useEffect(() => {

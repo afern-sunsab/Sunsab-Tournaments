@@ -17,6 +17,11 @@ export default function Page() {
     const [users, setUsers] = useState(null);
     const { user } = useUserAuth();
 
+	//Document title
+	useEffect(() => {
+		document.title = "RTDB Test";
+	}, []);
+
 	//Meant to hold info loaded from the RTDB
 	const [realtimeBracket, setRealtimeBracket] = useState(null);
 

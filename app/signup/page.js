@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth } from "../_utils/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -29,6 +29,11 @@ export default function Page() {
   const [displayName, setDisplayName] = useState("");
   const { user } = useUserAuth();
   const [name, setName] = useState("");
+
+  //Document title
+	useEffect(() => {
+		document.title = "Tournaments - Sign Up";
+	}, []);
 
   //Handles the creation of a new user in Firebase Authentication
   async function handleRegister(e) {

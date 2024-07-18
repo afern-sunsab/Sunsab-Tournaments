@@ -13,6 +13,10 @@ export default function Page({ params }) {
 	useEffect(() => {
 		const fetchTournament = async () => {
 			const data = await getTournament(params.tournament);
+			if (data.name)
+				document.title = "Tournaments - " + data.name;
+			else
+				document.title = "Tournaments - Tournament";
 			setTournament(data);
 		};
 		fetchTournament();

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUserAuth } from "@utils/auth-context.js";
 import { auth } from "@utils/firebase";
 import {
@@ -14,6 +14,11 @@ export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  //Document title
+	useEffect(() => {
+		document.title = "Tournaments - Login";
+	}, []);
 
   function handleSignOut() {
     firebaseSignOut();

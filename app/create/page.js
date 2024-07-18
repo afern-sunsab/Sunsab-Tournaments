@@ -1,7 +1,7 @@
 "use client"
 
 import { useUserAuth } from "@utils/auth-context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { createTournament } from "@utils/tournament_services";
 import { strg } from "@utils/firebase";
@@ -11,6 +11,11 @@ import { defaultTournament } from "@utils/tournament_services";
 export default function Page() {
 	const { user } = useUserAuth();
 	const [tournament, setTournament] = useState(defaultTournament);
+
+	//Document title
+	useEffect(() => {
+		document.title = "Tournaments - Create Tournament";
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

@@ -27,6 +27,8 @@ export default function Page() {
             setUsers(data);
         }
         fetchUsers();
+
+		document.title = "Bracket Test";
     }, []);
     
     const handleNewBracket = async () => {

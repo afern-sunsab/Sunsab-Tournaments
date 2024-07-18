@@ -11,6 +11,11 @@ export default function Page() {
 	const [tournaments, setTournaments] = useState([]);
 	const { user } = useUserAuth();
 
+	//Document title
+	useEffect(() => {
+		document.title = "Tournaments - Tournament List";
+	}, []);
+
 	useEffect(() => {
 		const fetchTournaments = async () => {
 			const data = await getTournaments();

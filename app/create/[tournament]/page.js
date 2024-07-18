@@ -9,6 +9,11 @@ export default function Page({ params }) {
 	const [tournament, setTournament] = useState();
 	const [brackets, setBrackets] = useState([defaultBracket]);
 
+	//Document title
+	useEffect(() => {
+		document.title = "Tournaments - New brackets";
+	}, []);
+
 	useEffect(() => {
 		const fetchTournament = async () => {
 			const data = await getTournament(params.tournament);
