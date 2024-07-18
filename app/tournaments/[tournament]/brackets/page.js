@@ -54,7 +54,7 @@ export default function Page({ params }) {
                   className="border rounded-md p-4 mb-4 hover:bg-gray-100"
                 >
                   <h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
-                  <h3 className="text-lg mb-4">Bracket Type: {bracket.type}</h3>
+                  <h3 className="text-lg mb-4"> {bracket.type}</h3>
                   <SingleElimination rounds={bracket.rounds} />
                 </div>
               ))}

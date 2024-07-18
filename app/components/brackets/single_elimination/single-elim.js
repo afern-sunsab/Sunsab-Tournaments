@@ -28,15 +28,31 @@ export default function SingleElimination({ rounds }) {
         <button className="w-48" onClick={() => setIsOpen(true)}>
           <SeedItem className="hover:bg-slate-400">
             <SeedTeam>
-              <div>{seed.teams?.[0].name || "-----------"} </div>
-              <div className="py-0.5 px-1.5 rounded bg-green-600">
+              <div>{seed.teams?.[0].name || "-----------"}</div>
+              <div
+                className={`py-0.5 px-1.5 rounded ${
+                  seed.teams?.[0].score > seed.teams?.[1].score
+                    ? "bg-green-600"
+                    : seed.teams?.[0].score === seed.teams?.[1].score
+                    ? "bg-gray-600"
+                    : "bg-red-600"
+                }`}
+              >
                 {seed.teams?.[0].score || "0"}
               </div>
             </SeedTeam>
             <div style={{ height: 1, backgroundColor: "#707070" }}></div>
             <SeedTeam>
-              <div>{seed.teams?.[1].name || "-----------"} </div>
-              <div className="py-0.5 px-1.5 rounded bg-green-600">
+              <div>{seed.teams?.[1].name || "-----------"}</div>
+              <div
+                className={`py-0.5 px-1.5 rounded ${
+                  seed.teams?.[1].score > seed.teams?.[0].score
+                    ? "bg-green-600"
+                    : seed.teams?.[1].score === seed.teams?.[0].score
+                    ? "bg-gray-600"
+                    : "bg-red-600"
+                }`}
+              >
                 {seed.teams?.[1].score || "0"}
               </div>
             </SeedTeam>
