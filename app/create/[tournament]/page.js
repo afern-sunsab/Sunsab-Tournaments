@@ -41,11 +41,18 @@ export default function Page({ params }) {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		brackets.forEach(async bracket => {
-			await createBracket(bracket);
-		});
+		//For each bracket, submit tot he database and get the docId
+		const newBrackets = await Promise.all(brackets.map(async bracket => {
+			const newBracket = await createBracket(bracket);
+			//console.log("New bracket:")
+			//console.log(newBracket)
+			//console.log("Got DocID " + newBracket.docId)
+			return newBracket;
+		  }));
 		alert("Created Brackets")
-		const updatedTournament = { ...tournament, brackets: brackets };
+		//console.log("Brackets:")
+		//console.log(newBrackets)
+		const updatedTournament = { ...tournament, brackets: newBrackets };
 		await updateTournament(updatedTournament);
 		alert("Updated Tournament with Brackets")
 	};

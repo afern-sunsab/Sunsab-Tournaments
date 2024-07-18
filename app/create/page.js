@@ -63,7 +63,6 @@ export default function Page() {
 		<main className="bg-white text-black p-6">
 		{user ? (
 			<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-				{console.log(user)}
 				<label htmlFor="name" className="text-sm font-medium">Name:</label>
 				<input
 					type="text"

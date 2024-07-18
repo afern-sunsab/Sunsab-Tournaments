@@ -21,11 +21,6 @@ export const getTournamentByDocId = async (docId) => {
 	//Add returned data to default data structure
 	const returnTournament = { ...defaultTournament, ...tournament };
 
-	//Quick test: Output Entrant refs
-	//I want to get the collection name of the first entrant
-	//console.log("Entrants:");
-	//console.log(returnTournament.entrants[0].path.split("/")[0]);
-
 	//Convert entrants array to array of user objects
 	returnTournament.entrants = await refsToObjects(returnTournament.entrants);
 
@@ -71,6 +66,10 @@ export const updateTournament = async (tournament) => {
 
 	//Convert entrants array to array of user references
 	updatedTournament.entrants = await objectsToRefs(updatedTournament.entrants, "users");
+
+	//Convert brackets array to array of bracket references
+	updatedTournament.brackets = await objectsToRefs(updatedTournament.brackets, "brackets");
+
 	await updateObject("tournaments", updatedTournament);
 }
 
