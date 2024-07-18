@@ -7,6 +7,7 @@ import { createTournament } from "@utils/tournament_services";
 import { strg } from "@utils/firebase";
 import EditThumbnail from "@components/images/edit-thumbnail";
 import { defaultTournament } from "@utils/tournament_services";
+import { getHighestID } from "@utils/firebase_services";
 
 export default function Page() {
 	const { user } = useUserAuth();
@@ -28,19 +29,32 @@ export default function Page() {
 		setTournament((prevTournament) => ({ ...prevTournament, [name]: date }))
 	};
 
+	// const handleThumbnailChange = async (e) => {
+	// 	const file = e.target.files[0];
+	// 	const thumbnailRef = ref(strg, `thumbnails/tournaments/${tournament.id}`);
+	// 	await uploadBytes(thumbnailRef, file);
+	// 	const thumbnailUrl = await getDownloadURL(thumbnailRef);
+	// 	setTournament((prevTournament) => ({ ...prevTournament, thumbnail: thumbnailUrl }))
+	// };
+
 	const handleThumbnailChange = async (e) => {
 		const file = e.target.files[0];
-		const thumbnailRef = ref(strg, `thumbnails/tournaments/${tournament.id}`);
-		await uploadBytes(thumbnailRef, file);
-		const thumbnailUrl = await getDownloadURL(thumbnailRef);
+		const thumbnailUrl = URL.createObjectURL(file);
 		setTournament((prevTournament) => ({ ...prevTournament, thumbnail: thumbnailUrl }))
-	};
+	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
 		const converted_close_date = new Date(tournament.close_date);
 		const converted_event_date = new Date(tournament.event_date);
-		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date, owner: user.docId }
+
+		const file = await fetch(tournament.thumbnail).then(res => res.blob());
+		const thumbnailRef = ref(strg, `thumbnails/tournaments/${await getHighestID('tournaments')+1}`);
+		await uploadBytes(thumbnailRef, file);
+		const thumbnailUrl = await getDownloadURL(thumbnailRef);
+
+		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date, owner: user.docId, thumbnail: thumbnailUrl }
 		const document = await createTournament(newTournament);
 		window.location.href = `/create/${document.docId}`;
 	}
