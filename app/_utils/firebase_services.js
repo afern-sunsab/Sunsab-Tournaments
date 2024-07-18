@@ -76,44 +76,44 @@ export const timestampToDate = (timestamp) => {
 	return date;
 }
 
-//Function to convert user object or array of user objects to reference to user document
-export const getUserRefs = async (user) => {
-	if (Array.isArray(user)) {
+//Function to convert object or array of objects to document references
+export const objectsToRefs = async (obj, type) => {
+	if (Array.isArray(obj)) {
 		//Only convert entrant data to reference if it is not already a reference
-		const userRefs = await Promise.all(user.map(async (user) => {
-			if (user.docId) {
-				const userRef = await doc(db, "users", user.docId);
-				return userRef;
+		const objRefs = await Promise.all(obj.map(async (obj) => {
+			if (obj.docId) {
+				const objRef = await doc(db, type, obj.docId);
+				return objRef;
 			}
-			return user;
+			return obj;
 		}));
-		return userRefs;
+		return objRefs;
 	}
-	else if (user.docId)
-		return doc(db, "users", user.docId);
-	return user;
+	else if (obj.docId)
+		return await doc(db, type, obj.docId);
+	return obj;
 }
 
-//Function to convert user reference to user object
-export const getUserObjects = async (user) => {
-	if (Array.isArray(user)) {
+//Function to convert a document reference or list of references to objects
+export const refsToObjects = async (ref) => {
+	if (Array.isArray(ref)) {
 		//Only convert entrant data to object if it is not already an object
-		const userObjects = await Promise.all(user.map(async (user) => {
-			if (!user.docId) {
-				const userDoc = await getDoc(user);
-				const userData = {docId: userDoc.id, ...userDoc.data()};
-				return userData;
+		const refObjects = await Promise.all(ref.map(async (ref) => {
+			if (!ref.docId) {
+				const refDoc = await getDoc(ref);
+				const refData = {docId: refDoc.id, ...refDoc.data()};
+				return refData;
 			}
-			return user;
+			return ref;
 		}));
-		return userObjects;
+		return refObjects;
 	}
-	else if (!user.docId) {
-		const userDoc = await getDoc(user);
-		const userData = {docId: userDoc.id, ...userDoc.data()};
-		return userData;
+	else if (!ref.docId) {
+		const refDoc = await getDoc(ref);
+		const refData = {docId: refDoc.id, ...refDoc.data()};
+		return refData;
 	}
-	return user;
+	return ref;
 }
 
 //Little stock function to pull docID if passed a document
@@ -171,7 +171,7 @@ export const getUsers = async () => {
 
 //Function to get reference to user document
 //Technically not necessary, but it's here for consistency
-//getUserRefs is the preferred function to use
+//objectsToRefs is the preferred function to use
 export const getUserRef = async (uid) => {
 	const document = await getDocs(query(collection(db, "users"), where("uid", "==", uid)));
 	const userRef = doc(db, "users", document.docs[0].id);

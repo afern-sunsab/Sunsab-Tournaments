@@ -1,6 +1,4 @@
-//import { updateTournament, getTournament, getUserRefs, getUser } from "./firebase_services";
-import { get } from "firebase/database";
-import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, getUserRefs, getUserObjects, getHighestID} from "./firebase_services";
+import {getObject, getObjectByDocID, getObjects, createObject, updateObject, createRef, objectsToRefs, refsToObjects, getHighestID} from "./firebase_services";
 
 export const defaultTournament = {
 	id: 0,
@@ -23,8 +21,13 @@ export const getTournamentByDocId = async (docId) => {
 	//Add returned data to default data structure
 	const returnTournament = { ...defaultTournament, ...tournament };
 
+	//Quick test: Output Entrant refs
+	//I want to get the collection name of the first entrant
+	//console.log("Entrants:");
+	//console.log(returnTournament.entrants[0].path.split("/")[0]);
+
 	//Convert entrants array to array of user objects
-	returnTournament.entrants = await getUserObjects(returnTournament.entrants);
+	returnTournament.entrants = await refsToObjects(returnTournament.entrants);
 
 	return returnTournament;
 }
@@ -34,7 +37,7 @@ export const getAllTournaments = async (queryData = null) => {
 
 	//Convert entrants array to array of user objects
 	for (let i = 0; i < tournaments.length; i++) {
-		tournaments[i].entrants = await getUserObjects(tournaments[i].entrants);
+		tournaments[i].entrants = await refsToObjects(tournaments[i].entrants);
 	}
 	return tournaments;
 }
@@ -67,7 +70,7 @@ export const updateTournament = async (tournament) => {
 	}
 
 	//Convert entrants array to array of user references
-	updatedTournament.entrants = await getUserRefs(updatedTournament.entrants);
+	updatedTournament.entrants = await objectsToRefs(updatedTournament.entrants, "users");
 	await updateObject("tournaments", updatedTournament);
 }
 

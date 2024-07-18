@@ -1,4 +1,4 @@
-import { getObject, getObjectByDocID, getUserRefs } from "./firebase_services";
+import { getObject, getObjectByDocID, objectsToRefs } from "./firebase_services";
 import {getObjects, createObject, updateObject, getHighestID} from "./firebase_services";
 
 //Default user data structure
@@ -49,7 +49,7 @@ export const updateUser = async (user) => {
 	if (updatedUser.id <= 0) {
 		updatedUser.id = await getHighestID("users") + 1;
 	}
-	
+
 	await updateObject("users", updatedUser);
 }
 
@@ -64,7 +64,7 @@ export const getUserData = async (docId) => {
 //Searches for all tournaments where a specified user is in the entrants array
 //Returns an array of tournament objects
 export const getUserTournaments = async (user) => {
-	const userRef = await getUserRefs(user);
+	const userRef = await objectsToRefs(user, "users");
 	const queryData = ["entrants", "array-contains", userRef];
 	const tournaments = await getObjects("tournaments", queryData);
 	console.log("Got user tournaments.")
