@@ -1,7 +1,9 @@
+
+import Navbar from "@components/Navbar";
+import SideBar from "@components/SideNavbar";
+import { AuthContextProvider } from "@utils/auth-context";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthContextProvider } from "@utils/auth-context";
-import Navbar from "@components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,10 +17,13 @@ export default function RootLayout({ children }) {
 		<AuthContextProvider>
 			<html lang="en">
 			
-				<body className={inter.className}>
-					<Navbar />
-					{children}
-					</body>
+				<body className={inter.className}  style={{ display: 'flex' }}>
+					<SideBar/>
+					<main style={{ flexGrow: 1,}}>
+						<Navbar />
+						{children}
+					</main>				
+				</body>
 			</html>
 		</AuthContextProvider>
 	);

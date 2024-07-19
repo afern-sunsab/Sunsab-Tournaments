@@ -1,0 +1,39 @@
+.linkStyle {
+  border-radius: var(--rounded-btn, .5rem);
+  padding: .5rem 1rem;
+  text-align: start;  
+  font-size: 20px;  
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(.4,0,.2,1), cubic-bezier(0,0,.2,1);
+  transition-duration: .2s;
+  background-color: inherit; 
+  color: white;  
+  margin-left: 1.5rem;  
+}
+
+.linkStyle:hover {
+  background-color: #BFDBFE;  
+}
+
+.linkStyle:active {
+  background-color: #1D4ED8;  
+  color: white;  
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  padding: var(--navbar-padding, .5rem);
+  min-height: 4rem;
+  width: 100%;
+}
+
+.imageStyle {
+  border-radius: var(--rounded-btn, .5rem);
+  padding: .5rem;  
+  margin-left: 1.5rem;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

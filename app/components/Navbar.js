@@ -1,14 +1,26 @@
-import React from "react";
+import Image from "next/image";
 import Link from "next/link";
+import TestAccount from '../../public/icons/TestAccount.svg';
+import styles from '../styles/Navbar.module.css';
 
 export default function Navbar() {
-	return (
-		<nav className="flex w-full p-2 bg-gray-300 justify-end">
-			<Link href='/' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Home </Link>
-			<Link href='/login' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Login </Link>
-			<Link href='/signup' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"> Sign Up </Link>
-			<Link href='/tournaments' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5">Tournaments</Link>
-			<Link href='/create' className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5">Create</Link>
-		</nav>
-	);
+  return (
+    <nav className={`navbar bg-base-100 h-20 flex ${styles.navbar}`}>
+      <div className={`flex ${styles.linkContainer}`}>
+        <Link href='/login' className={styles.linkStyle}> Login </Link>
+        <Link href='/signup' className={styles.linkStyle}> Sign Up </Link>
+        <Link href='/tournaments' className={styles.linkStyle}> Tournaments </Link>
+        <Link href='/create' className={styles.linkStyle}> Create </Link>
+        <div className={styles.imageStyle}>
+          <Image
+            src={TestAccount}
+            alt="Profile Icon"
+            width={40}
+            height={40}
+          />
+        </div>
+      </div>
+    </nav>
+  );
 }
+
