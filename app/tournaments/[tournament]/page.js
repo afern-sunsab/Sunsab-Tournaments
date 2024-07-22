@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useUserAuth } from "@utils/auth-context";
 import { getTournament, timestampToDate } from "@utils/firebase_services";
 import { joinTournament, leaveTournament } from "@utils/tournament_services";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Page({ params }) {
 	const [tournament, setTournament] = useState(null);

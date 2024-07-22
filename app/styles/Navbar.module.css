@@ -12,11 +12,10 @@
 }
 
 .linkStyle:hover {
-  background-color: #BFDBFE;  
+  background-color: #FED136;;  
 }
 
 .linkStyle:active {
-  background-color: #1D4ED8;  
   color: white;  
 }
 
