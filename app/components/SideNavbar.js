@@ -36,7 +36,7 @@ const SideBar = () => {
     firebaseSignOut();
   }
 
-  const isTournamentPage = pathname.startsWith('/tournament') || pathname.includes('/tournament');
+  const isTournamentPage = pathname.startsWith('/tournaments/') && pathname.split('/').length === 3;
 
   const isActive = (path) => pathname === path ? 'shadow-lg' : '';
 
@@ -103,7 +103,6 @@ const SideBar = () => {
 
       {isTournamentPage && (
         <>
-          <Link href="/tournaments">
             <div
               className={`flex items-center justify-center w-14 h-14 rounded-full duration-300 transform hover:scale-105 shadow-lg cursor-pointer mb-10 ${isActive('/tournaments')}`}
               onMouseEnter={() => setHoveredIcon('tournament')}
@@ -117,9 +116,7 @@ const SideBar = () => {
                 className="rounded-full"
               />
             </div>
-          </Link>
 
-          <Link href="/twotickets">
             <div
               className={`flex items-center justify-center w-14 h-14 rounded-full duration-300 transform hover:scale-105 shadow-lg cursor-pointer mb-10 ${isActive('/twotickets')}`}
               onMouseEnter={() => setHoveredIcon('tickets')}
@@ -133,7 +130,6 @@ const SideBar = () => {
                 className="rounded-full"
               />
             </div>
-          </Link>
         </>
       )}
     </div>
