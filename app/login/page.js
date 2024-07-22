@@ -1,14 +1,13 @@
 "use client";
-import { useState } from "react";
 import { useUserAuth } from "@utils/auth-context.js";
 import { auth } from "@utils/firebase";
 import {
-  signInWithEmailAndPassword,
-  signOut,
   getAuth,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword
 } from "firebase/auth";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Page() {
   const { user, firebaseSignOut } = useUserAuth();
