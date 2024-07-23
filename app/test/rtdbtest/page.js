@@ -54,7 +54,7 @@ export default function Page() {
 		//console.log(bracket.matches.round1.match1.player1.user.id)
 		//^This actually contains the docid!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (bracket) {
-			await sendBracketToRTDB(bracket);
+			await sendBracketToRTDB(bracket, true);
 			//console.log("RTDBTEST: Bracket sent to RTDB.");
 		}
 	}

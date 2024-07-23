@@ -207,13 +207,6 @@ export const getTournaments = async () => {
     return data;
 }
 
-// export const getTournament = async (id) => {
-// 	const document = await getDocs(query(collection(db, "tournaments"), where("id", "==", id)));
-// 	const tournament = document.docs.map(doc => ({ docId: doc.id, ...doc.data() }))[0];
-// 	console.log(`Fetched tournament ${tournament.name}`)
-// 	return tournament;
-// }
-
 export const getTournament = async (id) => {
 	const tournament = {docId: id, ...(await getDoc(doc(db, 'tournaments', id))).data()}
 	return tournament;
@@ -246,12 +239,6 @@ export const getMatch = async (id) => {
 	//console.log(`Fetched match ${match.name}`)
 	return match;
 }
-
-/*export const createTournament = async (tournament) => {
-	const document = await addDoc(collection(db, "tournaments"), tournament)
-	console.log(`Added new tournament ${tournament.name}`)
-	return document;
-}*/
 
 export const createTournament = async (tournament) => {
 	//Default data structure

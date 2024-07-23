@@ -1,11 +1,8 @@
-import { createObject, updateObject, getObject, getObjects, getObjectByDocID, objectsToRefs, createRef, parseDocID, timestampToDate, getHighestID } from "./firebase_services";
+import { createObject, updateObject, getObjects, getObjectByDocID, objectsToRefs, createRef, parseDocID, timestampToDate, getHighestID } from "./firebase_services";
 //RTDB functions
-import { getDatabase, ref, set, get, child, update, remove, onValue } from "firebase/database";
+import { ref, set, get, remove, onValue } from "firebase/database";
 import { rtdb } from "./firebase";
-import { db } from "./firebase";
-import { doc } from "firebase/firestore";
 import { getUserData } from "./user_services";
-import { getDoc } from "firebase/firestore";
 
 //Default data structure for a bracket
 export const defaultBracket = {
@@ -192,46 +189,23 @@ export const initializeMatches = async (bracket, entrants) => {
 }
 
 //Firebase-specific functions for transfering brackets to and from the database and the rtdb
-export const sendBracketToRTDB = async (bracket) => {
+//if force is set to true, the bracket will be sent to the RTDB regardless of whether it already exists
+export const sendBracketToRTDB = async (bracket, force = false) => {
 	//Create a bracket structure in the RTDB
 	//Uses the same structure as the Firestore bracket
 	//Uses the bracket's docId as the key
 
 	const bracketRef = ref(rtdb, `brackets/${bracket.docId}`);
 	///But first, check if the bracket is already in the RTDB
-	/*const bracketSnapshot = await get(child(bracketRef));
-	const bracketData = bracketSnapshot.val();
-	if (bracketData)
+	if (await isBracketInRTDB(bracket) && !force)
 	{
 		console.log("Bracket already exists in RTDB. Cancelling.");
 		return;
-	}*/
+	}
 	//Next, parse all players to convert references into docIDs
 	//Firebase RTDB doesn't like complex objects, so we'll store it as a string ("users/[docId]")
 	let bracketCopy = { ...bracket };
-	//console.log("Bracket copy:")
-	//console.log(bracketCopy);
-	/*bracketCopy.matches.map((round) => {
-		round.map((match) => {
-			match.player1.user = match.player1.user.id;
-			match.player2.user = match.player2.user.id;
-		});
-	});*/
-	/*Object.keys(bracketCopy.matches).map((round) => {
-		Object.keys(bracketCopy.matches[round]).map((match) => {
-			if (bracketCopy.matches[round][match].player1.user)
-			{
-				//Small fix for a mistake: If user is a string with just a docId, don't convert it
-				if (typeof bracketCopy.matches[round][match].player1.user !== "string")
-				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id;
-			}
-			if (bracketCopy.matches[round][match].player2.user)
-			{
-				if (typeof bracketCopy.matches[round][match].player2.user !== "string")
-				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id;
-			}
-		});
-	});*/
+
 	bracketCopy = await convertBracketToDocIDs(bracketCopy);
 	
 	await set(bracketRef, bracketCopy);
@@ -250,19 +224,8 @@ export const sendBracketToFirestore = async (bracket) => {
 		//First, convert all players back to references
 		//They should all be strings containing docIDs
 		let bracketCopy = { ...bracketData };
-		/*await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
-			await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
-			  if (bracketCopy.matches[round][match].player1.user) {
-				bracketCopy.matches[round][match].player1.user = await doc(db, "users", bracketCopy.matches[round][match].player1.user)
-			  }
-			  if (bracketCopy.matches[round][match].player2.user) {
-				bracketCopy.matches[round][match].player2.user = await doc(db, "users", bracketCopy.matches[round][match].player2.user)
-			  }
-			}));
-		  }));*/
 		bracketCopy = await convertBracketToUserRefs(bracketCopy);
-		//console.log("Bracket copy:")
-		//console.log(bracketCopy);
+
 		await updateBracket(bracketCopy, true);
 	}
 	else
