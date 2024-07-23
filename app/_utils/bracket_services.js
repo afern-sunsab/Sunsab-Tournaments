@@ -445,12 +445,12 @@ export const convertBrackets = (brackets) => {
 							//Somewht complicated: If user is a docId string pass that, otherwise if user has a codId value, pass that, otherwise pass null
 							id: match.player1.user ? (typeof match.player1.user === "string" ? match.player1.user : match.player1.user.docId) : null,
 							name: match.player1.user ? match.player1.user.name : null,
-							score: match.player1.user ? match.player1.score : null
+							score: match.player1.score ? match.player1.score : null
 						},
 						{
 							id: match.player2.user ? (typeof match.player2.user === "string" ? match.player2.user : match.player2.user.docId) : null,
 							name: match.player2.user ? match.player2.user.name : null,
-							score: match.player2.user ? match.player2.score : null
+							score: match.player2.score ? match.player2.score : null
 						}
 					]
 				};
