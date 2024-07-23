@@ -359,29 +359,18 @@ export const convertBracketToUserData = async (bracket) => {
 	//Copy the bracket
 	const bracketCopy = { ...bracket };
 	//Convert all user references to user data
-	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
-		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
-		  if (bracketCopy.matches[round][match].player1.user) {
+	await forEachPlayer(bracketCopy, async (player) => {
+		if (player.user) {
 			//Skip if user is already a user object
-			if (!bracketCopy.matches[round][match].player1.user.docId)
+			if (!player.user.docId)
 			{
-				if (typeof bracketCopy.matches[round][match].player1.user === "string")
-					bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user)
+				if (typeof player.user === "string")
+					player.user = await getUserData(player.user)
 				else
-					bracketCopy.matches[round][match].player1.user = await getUserData(bracketCopy.matches[round][match].player1.user.id)
+					player.user = await getUserData(player.user.id)
 			}
-			//Test
-			//console.log("Player 1 data:")
-			//console.log(bracketCopy.matches[round][match].player1.user);
-		  }
-		  if (bracketCopy.matches[round][match].player2.user) {
-			if (typeof bracketCopy.matches[round][match].player2.user === "string")
-				bracketCopy.matches[round][match].player2.user = await getUserData(bracketCopy.matches[round][match].player2.user)
-			else
-				bracketCopy.matches[round][match].player2.user = await getUserData(bracketCopy.matches[round][match].player2.user.id)
-		  }
-		}));
-	  }));
+		}
+	});
 	return bracketCopy;
 }
 
@@ -392,18 +381,15 @@ export const convertBracketToUserRefs = async (bracket) => {
 	//Copy the bracket
 	const bracketCopy = { ...bracket };
 	//Convert all user data to user references
-	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
-		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
-		  if (bracketCopy.matches[round][match].player1.user) {
-			if (typeof bracketCopy.matches[round][match].player1.user !== "string")
-				bracketCopy.matches[round][match].player1.user = createRef("users", bracketCopy.matches[round][match].player1.user.id)
-		  }
-		  if (bracketCopy.matches[round][match].player2.user) {
-			if (typeof bracketCopy.matches[round][match].player2.user !== "string")
-				bracketCopy.matches[round][match].player2.user = createRef("users", bracketCopy.matches[round][match].player2.user.id)
-		  }
-		}));
-	  }));
+	await forEachPlayer(bracketCopy, async (player) => {
+		if (player.user) {
+			console.log("Converting user data to user reference:")
+			if (typeof player.user !== "string")
+				player.user = createRef("users", player.user.id)
+			else
+				player.user = createRef("users", player.user)
+		}
+	});
 	return bracketCopy;
 }
 
@@ -415,22 +401,15 @@ export const convertBracketToDocIDs = async (bracket) => {
 	//Copy the bracket
 	const bracketCopy = { ...bracket };
 	//Convert all user data to docIDs
-	await Promise.all(Object.keys(bracketCopy.matches).map(async (round) => {
-		await Promise.all(Object.keys(bracketCopy.matches[round]).map(async (match) => {
-		  if (bracketCopy.matches[round][match].player1.user) {
-			if (bracketCopy.matches[round][match].player1.user.id)
-				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.id
-			else if (bracketCopy.matches[round][match].player1.user.docId)
-				bracketCopy.matches[round][match].player1.user = bracketCopy.matches[round][match].player1.user.docId
-		  }
-		  if (bracketCopy.matches[round][match].player2.user) {
-			if (bracketCopy.matches[round][match].player2.user.id)
-				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.id
-			else if (bracketCopy.matches[round][match].player2.user.docId)
-				bracketCopy.matches[round][match].player2.user = bracketCopy.matches[round][match].player2.user.docId
-		  }
-		}));
-	  }));
+	await forEachPlayer(bracketCopy, async (player) => {
+		if (player.user) {
+			//console.log("Converting user data to docID:")
+			if (player.user.id)
+				player.user = player.user.id
+			else if (player.user.docId)
+				player.user = player.user.docId
+		}
+	});
 	return bracketCopy;
 }
 
@@ -476,3 +455,37 @@ export const convertBrackets = (brackets) => {
 	//console.log(convertedBrackets);
 	return convertedBrackets;
 };
+
+//Stock function to iterate through all rounds within a bracket (For Angelo) (I hate it)
+//Attaches to a callback function to do something with each round
+export const forEachRound = async (bracket, callback) => {
+	//Iterate through each round
+	await Promise.all(Object.keys(bracket.matches).map(async (round) => {
+		//Call the callback function with the round data
+		await callback(bracket.matches[round]);
+	}));
+}
+
+//Stock function to iterate through all matches within a bracket (For Angelo)
+//Attaches to a callback function to do something with each match
+export const forEachMatch = async (bracket, callback) => {
+	//Recycle the round function to iterate through all matches
+	await forEachRound(bracket, async (round) => {
+		//Call the callback function with each match
+		await Promise.all(Object.keys(round).map(async (match) => {
+			await callback(round[match]);
+		}));
+	});
+}
+
+//Stock function to iterate through all players within a bracket
+//Attaches to a callback function to do something with each player
+export const forEachPlayer = async (bracket, callback) => {
+	//Recycle the match function to iterate through all players
+	await forEachMatch(bracket, async (match) => {
+		//Call the callback function with each player
+		await Promise.all(Object.keys(match).map(async (player) => {
+			await callback(match[player]);
+		}));
+	});
+}
