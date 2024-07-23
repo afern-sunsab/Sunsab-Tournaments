@@ -404,10 +404,7 @@ export const convertBracketToUserRefs = async (bracket) => {
 	await forEachPlayer(bracketCopy, async (player) => {
 		if (player && player.user) {
 			console.log("Converting user data to user reference:")
-			if (typeof player.user !== "string")
-				player.user = createRef("users", player.user.id)
-			else
-				player.user = createRef("users", player.user)
+			player.user = await objectsToRefs(player.user, "users");
 		}
 	});
 	return bracketCopy;
@@ -422,7 +419,7 @@ export const convertBracketToDocIDs = async (bracket) => {
 	const bracketCopy = { ...bracket };
 	//Convert all user data to docIDs
 	await forEachPlayer(bracketCopy, async (player) => {
-		if (player.user) {
+		if (player && player.user) {
 			//console.log("Converting user data to docID:")
 			if (player.user.id)
 				player.user = player.user.id

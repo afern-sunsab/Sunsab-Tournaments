@@ -84,6 +84,10 @@ export const objectsToRefs = async (obj, type) => {
 			if (obj.docId) {
 				const objRef = await doc(db, type, obj.docId);
 				return objRef;
+			} //If obj is a string, it's probably a docId
+			else if (typeof obj === 'string') {
+				const objRef = await doc(db, type, obj);
+				return objRef;
 			}
 			return obj;
 		}));
@@ -184,6 +188,7 @@ export const getUserRef = async (uid) => {
 //id: the id (docId) of the document
 //Supposedly doesn't make a request to the database, but I don't know if that's true
 export function createRef(type, id) {
+	//console.log(`Creating reference to ${type} document with ID ${id}`);
 	return doc(db, type, id);
 }
 
