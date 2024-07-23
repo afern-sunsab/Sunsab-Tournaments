@@ -17,7 +17,11 @@ export default function Page({ params }) {
   useEffect(() => {
     const fetchTournament = async () => {
       const data = await getTournamentByDocId(params.tournament);
+      if (data.name)
+        document.title = "Tournaments - " + data.name + " Brackets";
+      else document.title = "Tournaments - Tournament";
       setTournament(data);
+      console.log(data);
     };
     fetchTournament();
   }, [params]);
@@ -26,6 +30,7 @@ export default function Page({ params }) {
     const fetchBrackets = async () => {
       if (tournament) {
         const data = await getTournamentBrackets(tournament);
+        console.log(data);
         setBrackets(data);
       }
     };
@@ -35,6 +40,7 @@ export default function Page({ params }) {
   useEffect(() => {
     if (brackets.length > 0) {
       const converted = convertBrackets(brackets);
+      console.log(converted);
       setConvertedBrackets(converted);
     }
   }, [brackets]);
@@ -54,7 +60,7 @@ export default function Page({ params }) {
                   className="border rounded-md p-4 mb-4 hover:bg-gray-100"
                 >
                   <h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
-                  <h3 className="text-lg mb-4"> {bracket.type}</h3>
+                  <h3 className="text-lg mb-4">Bracket Type: {bracket.type}</h3>
                   <SingleElimination rounds={bracket.rounds} />
                 </div>
               ))}
