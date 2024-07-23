@@ -23,6 +23,24 @@ const customStyles = {
 
 export default function SingleElimination({ rounds }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [score1, setScore1] = useState(0);
+  const [score2, setScore2] = useState(0);
+
+  function handleScore1Up() {
+    setScore1(score1 + 1);
+  }
+
+  function handleScore1Down() {
+    setScore1(score1 - 1);
+  }
+
+  function handleScore2Up() {
+    setScore2(score2 + 1);
+  }
+
+  function handleScore2Down() {
+    setScore2(score2 - 1);
+  }
 
   const RenderSeed = ({ breakpoint, seed }) => {
     return (
@@ -33,14 +51,16 @@ export default function SingleElimination({ rounds }) {
               <div>{seed.teams?.[0].name || "-----------"}</div>
               <div
                 className={`py-0.5 px-1.5 rounded ${
-                  seed.teams?.[0].score > seed.teams?.[1].score
+                  seed.teams?.[0].score + score1 >
+                  seed.teams?.[1].score + score2
                     ? "bg-green-600"
-                    : seed.teams?.[0].score === seed.teams?.[1].score
+                    : seed.teams?.[0].score + score1 ===
+                      seed.teams?.[1].score + score2
                     ? "bg-gray-600"
                     : "bg-red-600"
                 }`}
               >
-                {seed.teams?.[0].score || "0"}
+                {seed.teams?.[0].score + score1 || "0"}
               </div>
             </SeedTeam>
             <div style={{ height: 1, backgroundColor: "#707070" }}></div>
@@ -48,14 +68,16 @@ export default function SingleElimination({ rounds }) {
               <div>{seed.teams?.[1].name || "-----------"}</div>
               <div
                 className={`py-0.5 px-1.5 rounded ${
-                  seed.teams?.[1].score > seed.teams?.[0].score
+                  seed.teams?.[1].score + score2 >
+                  seed.teams?.[0].score + score1
                     ? "bg-green-600"
-                    : seed.teams?.[1].score === seed.teams?.[0].score
+                    : seed.teams?.[1].score + score2 ===
+                      seed.teams?.[0].score + score1
                     ? "bg-gray-600"
                     : "bg-red-600"
                 }`}
               >
-                {seed.teams?.[1].score || "0"}
+                {seed.teams?.[1].score + score2 || "0"}
               </div>
             </SeedTeam>
           </SeedItem>
@@ -65,8 +87,19 @@ export default function SingleElimination({ rounds }) {
           onRequestClose={() => setIsOpen(false)}
           style={customStyles}
         >
-          <button className="text-black" onClick={() => setIsOpen(false)}>
-            Close
+          <p className="text-black">Player 1</p>
+          <button className="text-black" onClick={handleScore1Up}>
+            [+1]
+          </button>
+          <button className="text-black" onClick={handleScore1Down}>
+            [-1]
+          </button>
+          <p className="text-black">Player 2</p>
+          <button className="text-black" onClick={handleScore2Up}>
+            [+1]
+          </button>
+          <button className="text-black" onClick={handleScore2Down}>
+            [-1]
           </button>
         </Modal>
         <SeedTime mobileBreakpoint={breakpoint} style={{ fontSize: 9 }}>
