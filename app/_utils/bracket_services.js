@@ -21,9 +21,9 @@ export const defaultMatch = {
 		score: 0,
 		user: null
 	},
-	isBye: false,
-	nextMatch: null,
-	matchFlags: [],
+	is_bye: false,
+	next_match: null,
+	match_flags: [],
 	date: Date.now()
 };
 
