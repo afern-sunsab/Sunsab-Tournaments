@@ -12,6 +12,21 @@ export const defaultBracket = {
 	capacity: 0
 };
 
+export const defaultMatch = {
+	player1: {
+		score: 0,
+		user: null
+	},
+	player2: {
+		score: 0,
+		user: null
+	},
+	isBye: false,
+	nextMatch: null,
+	matchFlags: [],
+	date: Date.now()
+};
+
 // Function to get a bracket by its document ID
 export const getBracketByDocId = async (docId, bypassRTDB = false) =>
 {
@@ -123,7 +138,7 @@ export const initializeMatches = async (bracket, entrants) => {
 	// Create matches
 	let matchid = 1;
 	for (let i = 0; i < entrantsCopy.length - 2; i += 2) {
-		const match = {
+		let match = {
 			player1: {
 				score: 0,
 				user: createRef("users", entrantsCopy[i].docId),
@@ -133,7 +148,7 @@ export const initializeMatches = async (bracket, entrants) => {
 				user: createRef("users", entrantsCopy[i + 1].docId),
 			}
 		};
-		const matchReturn = {
+		let matchReturn = {
 			player1: {
 				score: 0,
 				user: entrantsCopy[i],
@@ -143,6 +158,9 @@ export const initializeMatches = async (bracket, entrants) => {
 				user: entrantsCopy[i + 1],
 			}
 		};
+		//Add match data to default match structure
+		match = { ...defaultMatch, ...match };
+		matchReturn = { ...defaultMatch, ...matchReturn };
 		console.log("Creating match " + matchid + " with " + entrantsCopy[i].username + " vs " + entrantsCopy[i + 1].username);
 		const matchname = "match" + matchid;
 		//matches.round1.push({ [matchname]: match });
@@ -152,7 +170,7 @@ export const initializeMatches = async (bracket, entrants) => {
 	}
 	//If there is still an odd number of entrants, create a bye match
 	if (entrantsCopy.length % 2 !== 0) {
-		const match = {
+		let match = {
 			player1: {
 				score: 0,
 				user: createRef("users", entrantsCopy[entrantsCopy.length - 1].docId),
@@ -163,7 +181,7 @@ export const initializeMatches = async (bracket, entrants) => {
 				user: null,
 			}
 		};
-		const matchReturn = {
+		let matchReturn = {
 			player1: {
 				score: 0,
 				user: entrantsCopy[entrantsCopy.length - 1],
@@ -173,7 +191,9 @@ export const initializeMatches = async (bracket, entrants) => {
 				user: null,
 			}
 		};
-		//matches.round2.push({ ["match1"]: match });
+		//Add match data to default match structure
+		match = { ...defaultMatch, ...match };
+		matchReturn = { ...defaultMatch, ...matchReturn };
 		matches.round2["match1"] = match;
 		matchesReturn.round2["match1"] = matchReturn;
 	}
@@ -382,7 +402,7 @@ export const convertBracketToUserRefs = async (bracket) => {
 	const bracketCopy = { ...bracket };
 	//Convert all user data to user references
 	await forEachPlayer(bracketCopy, async (player) => {
-		if (player.user) {
+		if (player && player.user) {
 			console.log("Converting user data to user reference:")
 			if (typeof player.user !== "string")
 				player.user = createRef("users", player.user.id)
