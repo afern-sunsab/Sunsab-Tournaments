@@ -60,58 +60,77 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <div className="relative min-h-screen flex items-center justify-center">
+    <div  className="bg-gradient-to-t from-yellow-100 to-white flex justify-center items-center h-screen">
+            <div className="w-1/2 h-screen hidden lg:block">
+        <img
+          src="https://fastly.picsum.photos/id/499/5000/3333.jpg?hmac=8XkC7IrqC_XkTuZ5BjOznGC4o7ka4SP5JY-sl07ajRk"
+          alt="Placeholder Image"
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className=" sm:p-20   lg:w-1/2 bg-white shadow  rounded-lg divide-y divide-gray-200  w-full ">
+      
         {!user && (
-          <div
-            dir="ltr"
-            className="text-center bg-white dark:bg-gray-500 p-8 rounded-xl"
-          >
-            <p className="text-xl text-header-text-0 font-semibold mb-5 dark:text-dark-header-text-0">
-              Sign in to your account
-            </p>
-            <form
-              onSubmit={handleEmailPasswordSignIn}
-              className="mb-6 flex flex-col items-center"
-            >
+          <div>
+          <h1 className="text-2xl font-semibold mb-4">Login</h1>
+          <form onSubmit={handleEmailPasswordSignIn}>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-gray-600">
+                Email
+              </label>
               <input
                 type="email"
+                id="email"
                 value={email}
-                className="bg-slate-100 text-black border-s-4 border-slate-300 p-2 mb-4"
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 required
               />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-gray-600">
+                Password
+              </label>
               <input
                 type="password"
+                id="password"
                 value={password}
-                className="bg-slate-100 text-black border-s-4 border-slate-300 p-2 mb-4"
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                 required
               />
-              <button
-                type="submit"
-                className="bg-slate-50 bg-navbar-body-0 active:bg-blue-400 active:dark:bg-blue-600 rounded text-black dark:text-white drop-shadow dark:bg-gray-600 p-2"
-              >
-                Sign In with Email
-              </button>
-            </form>
-            <div className="drop-shadow">
-              <button
-                onClick={() => handlePasswordReset()}
-                className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 dark:text-white dark:bg-gray-600 rounded p-2"
-              >
-                Forgot Password
-              </button>
-              <Link
-                href="signup"
-                className="bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 ml-6 dark:text-white dark:bg-gray-600 rounded p-2.5"
-              >
-                Sign Up
-              </Link>
             </div>
+            <div className="mb-6 text-blue-500">
+              <button
+                type="button"
+                onClick={handlePasswordReset}
+                className="hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
+            <button
+              type="submit"
+              className="bg-[#FED136] hover:bg-[#EFBB35] text-black font-bold py-2.5 px-8 rounded-full transition duration-300 transform hover:scale-105 w-full text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
+            >
+              <span className="inline-block mr-2">Login</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-4 h-4 inline-block"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>            
+            </button>
+          </form>
+          <div className="mt-6 text-blue-500 text-center">
+            <Link href="signup" className="hover:underline">
+              Sign up Here
+            </Link>
           </div>
+        </div>
         )}
         {user && (
           <div className="text-center text-header-text-0">

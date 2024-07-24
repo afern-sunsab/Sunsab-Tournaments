@@ -39,7 +39,7 @@ body {
   text-align: start;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(.4,0,.2,1), cubic-bezier(0,0,.2,1);
-  transition-duration: .2s;
+  transition: background-size 0.5s ease-out;
   text-wrap: balance;
 }
 

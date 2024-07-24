@@ -7,7 +7,8 @@
   transition-timing-function: cubic-bezier(.4,0,.2,1), cubic-bezier(0,0,.2,1);
   transition-duration: .2s;
   background-color: inherit; 
-  color: white;  
+  color: black;  
+  ;
   margin-left: 1.5rem;  
 }
 
@@ -26,6 +27,7 @@
   padding: var(--navbar-padding, .5rem);
   min-height: 4rem;
   width: 100%;
+  background-color: white
 }
 
 .imageStyle {

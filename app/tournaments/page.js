@@ -21,7 +21,7 @@ export default function Page() {
 
   return (
     <main className="bg-white text-black p-6">
-      <h1 className="text-3xl font-bold mb-4">Tournaments</h1>
+      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-6 leading-tight">Tournaments</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {tournaments.length > 0 ? (
           tournaments.map((tournament) => (
@@ -81,16 +81,6 @@ export default function Page() {
         )}
       </div>
 
-      <h1 className="text-3xl font-bold mt-4">User Data</h1>
-      {user ? (
-        <div className="border rounded-md p-4 mt-4">
-          <h2 className="text-xl font-bold">Name: {user.name}</h2>
-          <p className="text-lg">Username: {user.username}</p>
-          <p className="text-lg">Email: {user.email}</p>
-        </div>
-      ) : (
-        <p className="mt-4">Please log in to view your user data</p>
-      )}
     </main>
   );
 }

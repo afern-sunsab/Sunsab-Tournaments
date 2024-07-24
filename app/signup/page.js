@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { auth } from "../_utils/firebase";
+import { createUser } from "@utils/user_services";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signOut,
   updateProfile,
 } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { useState } from "react";
 import { useUserAuth } from "../_utils/auth-context.js";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../_utils/firebase";
-import { createUser } from "@utils/user_services";
+import { auth, db } from "../_utils/firebase";
 
 //Change for user
 //Add items
@@ -115,55 +114,65 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <div>
+    <div className="min-h-screen bg-gradient-to-t from-yellow-100 to-white flex flex-col justify-center sm:py-12">
+      <div  className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
         {!user && (
-          <div className="min-h-screen flex items-center justify-center relative">
-            <form
-              onSubmit={handleRegister}
-              className="mb-8 flex flex-col items-center bg-white dark:bg-gray-500 p-8 rounded-xl drop-shadow-lg"
-            >
-              <p className="text-xl text-header-text-0 font-semibold mb-5 dark:text-dark-header-text-0">
-                Sign Up
-              </p>
-              <input
-                type="email"
-                value={email}
-                className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-              />
-              <input
-                type="password"
-                value={password}
-                className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Username"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-slate-100 text-black dark:text-dark-header-text-0 border-s-4 border-slate-300 p-2 mb-4"
-              />
-              <button
-                type="submit"
-                className="drop-shadow bg-slate-50 text-black active:bg-blue-400 active:dark:bg-blue-600 dark:text-white dark:bg-gray-600 rounded p-2"
+          <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
+          <form onSubmit={handleRegister} className="px-5 py-7">
+            <label htmlFor="email" className="block text-gray-600">
+                Email
+            </label>            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+              required
+            />
+            <label htmlFor="password" className="block text-gray-600">
+                Password
+            </label>                 
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+              required
+            />
+            <label htmlFor="username" className="block text-gray-600">
+                Username
+            </label>               
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+              required
+            />
+            <label htmlFor="name" className="block text-gray-600">
+                Name
+            </label>               
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+            />
+            <button
+              type="submit"
+              className="bg-[#FED136] hover:bg-[#EFBB35] text-black font-bold py-2.5 px-8 rounded-full transition duration-300 transform hover:scale-105 w-full text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
               >
-                Sign Up with Email
-              </button>
-            </form>
+              <span className="inline-block mr-2">Sign Up with Email</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-4 h-4 inline-block"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </form>
           </div>
         )}
         {user && (
