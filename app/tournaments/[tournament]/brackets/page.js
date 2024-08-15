@@ -4,6 +4,9 @@ import { getTournamentBrackets, convertBrackets } from "@utils/bracket_services"
 import { getTournamentByDocId} from "@utils/tournament_services";
 import { useState, useEffect } from "react";
 import SingleElimination from "@components/brackets/single_elimination/single-elim";
+import Match from "@components/brackets/match";
+import { forEachRound } from "@utils/bracket_services";
+import Single from "@components/brackets/single/single";
 // import LoadingBracket, { RenderLoadingSeed } from "./loading";
 
 export default function Page({ params }){
@@ -50,11 +53,12 @@ export default function Page({ params }){
 					<h1 className="text-2xl font-bold mb-4">{tournament.name} Brackets</h1>
 					{brackets.length > 0 ? (
 						<div>
-							{convertedBrackets.map((bracket, index) => (
+							{brackets.map((bracket, index) => (
 								<div key={index} className="border rounded-md p-4 mb-4 hover:bg-gray-100">
-									<h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
+									{/* <h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
 									<h3 className="text-lg mb-4">Bracket Type: {bracket.type}</h3>
-									<SingleElimination rounds={bracket.rounds} />
+									<SingleElimination rounds={bracket.rounds} /> */}
+									<Single bracket={bracket}/>
 								</div>
 							))}
 						</div>
