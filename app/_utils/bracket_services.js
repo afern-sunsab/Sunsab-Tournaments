@@ -315,6 +315,7 @@ export const createBracketListener = async (bracket, callback) => {
 }
 /*
 	^^^This one's a bit complex, so here's an example implementation:
+	const [realtimeBracket, setRealtimeBracket] = useState(null);
 	createBracketListener(docID, (data) => {
 		setRealtimeBracket(data);
 	});
@@ -326,22 +327,22 @@ export const createBracketListener = async (bracket, callback) => {
 //The winner will be moved to the next round
 //The next round's match number will be the current match number divided by 2, rounded up
 //If the match is in the final round, the bracket will be marked as complete
-//round, match, and winner are all integers starting at 1, acting as indexes
+//round, match, and winner are all key names (ie "round1", "match1", "player1")
 //Returns the updated bracket
 export const declareWinner = async (bracket, round, match, winner) => {
 	//Copy the bracket
 	const bracketCopy = { ...bracket };
 	//Find the match
-	const matchData = bracketCopy.matches["round" + round]["match" + match];
+	const matchData = bracketCopy.matches[round][match];
 	//Find the next match
-	const nextRound = "round" + (round + 1);
-	const nextMatch = "match" + Math.ceil(match / 2);
+	const nextRound = "round" + (parseInt(round.replace("round", "")) + 1);
+	const nextMatch = "match" + Math.ceil(parseInt(match.replace("match", "")) / 2);
 	//Declare the winner
-	const winnerData = matchData["player" + winner].user;
+	const winnerData = matchData[winner].user;
 
 	//If the the current round only has one match, it is the final match
 	//Mark the bracket as complete
-	if (Object.keys(bracketCopy.matches["round" + round]).length === 1) {
+	if (Object.keys(bracketCopy.matches[round]).length === 1) {
 		bracketCopy.completed = true;
 	}
 	else{
@@ -363,13 +364,29 @@ export const declareWinner = async (bracket, round, match, winner) => {
 			};
 		}
 		//Move the winner to the next round
-		bracketCopy.matches[nextRound][nextMatch]["player" + (2 - (match % 2))].user = winnerData;
+		bracketCopy.matches[nextRound][nextMatch]["player" + (2 - (parseInt(match.replace("match", "")) % 2))].user = winnerData;
 	}
 	
 	//Update the bracket
 	await updateBracket(bracketCopy);
 	return bracketCopy;
 }
+
+//Function to set score for a given player in a match
+//Basically the same as declareWinner, but changes the score instead of moving the player
+//Returns the updated bracket
+export const setScore = async (bracket, round, match, player, score) => {
+	//Copy the bracket
+	const bracketCopy = { ...bracket };
+	//Find the match
+	const matchData = bracketCopy.matches[round][match];
+	//Set the score
+	matchData[player].score = score;
+	//Update the bracket
+	await updateBracket(bracketCopy);
+	return bracketCopy;
+}
+
 
 //Function to convert a bracket's user references to user data
 //Accepts a bracket object with user references or reference strings
