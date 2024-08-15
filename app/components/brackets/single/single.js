@@ -1,5 +1,6 @@
 import { forEachMatch, forEachRound } from "@utils/bracket_services";
 import Match from "../match";
+import { declareWinner, setScore } from "@utils/bracket_services";
 
 export default function Single({ bracket }) {
 
@@ -15,6 +16,10 @@ export default function Single({ bracket }) {
 		}));
 	}
 
+	const handleWinner = async (round, match, player) => {
+		await declareWinner(bracket, round, match, player);
+	}
+
 	return (
 		<main className="text-black">
 			<div className="flex overflow-x-auto space-x-4">
@@ -24,7 +29,7 @@ export default function Single({ bracket }) {
 							<div className="font-bold text-lg mb-2">{roundName}</div>
 							<div className="space-y-4"> {/* Adds vertical spacing between matches */}
 								{Object.entries(round).map(([matchName, match], matchIndex) => (
-									<Match key={matchIndex} match={match} />
+									<Match key={matchIndex} match={match} handleWinner={(playerName) => handleWinner(roundName, matchName, playerName)} />
 								))}
 							</div>
 						</div>
