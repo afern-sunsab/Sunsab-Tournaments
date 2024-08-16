@@ -137,7 +137,7 @@ export const initializeMatches = async (bracket, entrants) => {
 	};
 	// Create matches
 	let matchid = 1;
-	for (let i = 0; i < entrantsCopy.length - 2; i += 2) {
+	for (let i = 0; i <= entrantsCopy.length - 2; i += 2) {
 		let match = {
 			player1: {
 				score: 0,
