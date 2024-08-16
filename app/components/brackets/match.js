@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 //import { declareWinner, setScore } from '@utils/bracket_services';
 
-export default function Match({match, handleWinner}) {
+export default function Match({match, handleWinner, handleScore}) {
 	const [showPopup, setShowPopup] = useState(false);
-	console.log(match)
+	//console.log(match)
 
 	// const match = {
 	// 	player1: {
@@ -22,10 +22,18 @@ export default function Match({match, handleWinner}) {
 		setShowPopup(!showPopup);
 	};
 
+	//Declares a winner, passes the winner to the parent component (single.js, for now)
 	const handleDeclareWinner = (player) => {
 		console.log("Declaring winner: " + player);
 		handleWinner(player);
 		togglePopup();
+	}
+
+	//Changes the score of a player, passes the new score to the parent component (single.js, for now)
+	//Angelo will need to create the interface for this
+	const handleChangeScore = (player, score) => {
+		console.log("Changing score for " + player + " to " + score);
+		handleScore(player, score);
 	}
 
 	return (
@@ -64,7 +72,6 @@ export default function Match({match, handleWinner}) {
 			<div style={{ cursor: 'default' }} className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 z-50 text-black">
 			<div onClick={(e) => e.stopPropagation()} className="bg-white p-4 rounded-md shadow-md" >
 				<p className="text-lg font-medium mb-2">Match Details</p>
-				
 					<p>
 						<button onClick={() => handleDeclareWinner("player1")}>
 							{match.player1.user ? match.player1.user.username : ""}
@@ -75,7 +82,16 @@ export default function Match({match, handleWinner}) {
 						</button>
 						</p>
 						
-				<p>Score: {match.player1.score} - {match.player2.score}</p>
+				<p>Score: 
+					<button onClick={() => handleChangeScore("player1", match.player1.score + 1)}>
+						{match.player1.score}
+					</button>
+					-
+					<button onClick={() => handleChangeScore("player2", match.player2.score + 1)}>
+						{match.player2.score}
+					</button>
+				</p>
+				
 				<button className="mt-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
 						onClick={togglePopup}>
 				Close

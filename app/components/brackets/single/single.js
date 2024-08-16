@@ -20,6 +20,10 @@ export default function Single({ bracket }) {
 		await declareWinner(bracket, round, match, player);
 	}
 
+	const handleChangeScore = async (round, match, player, score) => {
+		await setScore(bracket, round, match, player, score);
+	}
+
 	return (
 		<main className="text-black">
 			<div className="flex overflow-x-auto space-x-4">
@@ -29,7 +33,12 @@ export default function Single({ bracket }) {
 							<div className="font-bold text-lg mb-2">{roundName}</div>
 							<div className="space-y-4"> {/* Adds vertical spacing between matches */}
 								{Object.entries(round).map(([matchName, match], matchIndex) => (
-									<Match key={matchIndex} match={match} handleWinner={(playerName) => handleWinner(roundName, matchName, playerName)} />
+									<Match
+										key={matchIndex}
+										match={match}
+										handleWinner={(playerName) => handleWinner(roundName, matchName, playerName)}
+										handleScore={(playerName, score) => handleChangeScore(roundName, matchName, playerName, score)}
+									/>
 								))}
 							</div>
 						</div>
