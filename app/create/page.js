@@ -8,14 +8,22 @@ import { strg } from "@utils/firebase";
 import EditThumbnail from "@components/images/edit-thumbnail";
 import { defaultTournament } from "@utils/tournament_services";
 import { getHighestID } from "@utils/firebase_services";
+//Debug import for adding players
+import { getAllUsers } from "@utils/user_services";
+import { objectsToRefs } from "@utils/firebase_services";
 
 export default function Page() {
 	const { user } = useUserAuth();
 	const [tournament, setTournament] = useState(defaultTournament);
 
+	//Debug flag: Whether to add random players to the tournament
+	const [addRandomPlayers, setAddRandomPlayers] = useState(false);
+
 	//Document title
 	useEffect(() => {
 		document.title = "Tournaments - Create Tournament";
+		//Quick test: Run debugAddPlayers to test output
+		//debugAddPlayers();
 	}, []);
 
 	const handleChange = (e) => {
@@ -55,8 +63,27 @@ export default function Page() {
 		const thumbnailUrl = await getDownloadURL(thumbnailRef);
 
 		const newTournament = { ...tournament, close_date: converted_close_date, event_date: converted_event_date, owner: user.docId, thumbnail: thumbnailUrl }
+
+		//DEBUG: Add random players to the tournament
+		if (addRandomPlayers)
+			await debugAddPlayers(newTournament);
+
 		const document = await createTournament(newTournament);
 		window.location.href = `/create/${document.docId}`;
+	}
+
+	//Debug function to add 8 random players to the tournament
+	const debugAddPlayers = async (newTournament) => {
+		//Get all users
+		const users = await getAllUsers();
+		//Randomize the list and drop all but the first 8
+		const randomUsers = users.sort(() => Math.random() - 0.5).slice(0, 8);
+		//Convert the user objects to refs
+		const userRefs = await objectsToRefs(randomUsers, "users");
+		console.log("Your random users:");
+		console.log(userRefs);
+		//Set the entrants array to the random users
+		newTournament.entrants = userRefs;
 	}
 
 	return(
@@ -126,6 +153,18 @@ export default function Page() {
 					className="border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-blue-500"
 				/>
 				<EditThumbnail handleThumbnailChange={handleThumbnailChange} thumbnail={tournament.thumbnail}/>
+				{/* Radio button to enable debugAddPlayers */}
+				<div>
+					<label htmlFor="addRandomPlayers" className="text-sm font-medium">Add Random Players:</label>
+					<input
+						type="checkbox"
+						name="addRandomPlayers"
+						id="addRandomPlayers"
+						checked={addRandomPlayers}
+						onChange={() => setAddRandomPlayers(!addRandomPlayers)}
+						className="border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-blue-500"
+					/>
+				</div>
 				<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">Submit</button>
 			</form>
 		) : (

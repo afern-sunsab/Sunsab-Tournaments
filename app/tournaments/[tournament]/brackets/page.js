@@ -68,13 +68,13 @@ export default function Page({ params }){
 		fetchBrackets()
 	}, [tournament]);
 
-    useEffect(() => {
-        if (brackets.length > 0) {
-            const converted = convertBrackets(brackets);
-			//console.log(converted);
-            setConvertedBrackets(converted);
-        }
-    }, [brackets]);
+    // useEffect(() => {
+    //     if (brackets.length > 0) {
+    //         const converted = convertBrackets(brackets);
+	// 		//console.log(converted);
+    //         setConvertedBrackets(converted);
+    //     }
+    // }, [brackets]);
 
 	return(
 		<main className="bg-white text-black p-6">

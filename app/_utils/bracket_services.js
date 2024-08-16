@@ -397,7 +397,7 @@ export const convertBracketToUserData = async (bracket) => {
 	const bracketCopy = { ...bracket };
 	//Convert all user references to user data
 	await forEachPlayer(bracketCopy, async (player) => {
-		if (player.user) {
+		if (player && player.user) {
 			//Skip if user is already a user object
 			if (!player.user.docId)
 			{

@@ -4,6 +4,10 @@ import { getTournament } from "@utils/firebase_services";
 import { createBracket, defaultBracket } from "@utils/bracket_services";
 import { useState, useEffect } from "react";
 import { updateTournament } from "@utils/tournament_services";
+import { initializeMatches } from "@utils/bracket_services";
+//Quick debug import, not needed for production
+import { refsToObjects } from "@utils/firebase_services";
+import { sendBracketToRTDB } from "@utils/bracket_services";
 
 export default function Page({ params }) {
 	const [tournament, setTournament] = useState();
@@ -53,6 +57,16 @@ export default function Page({ params }) {
 		//console.log("Brackets:")
 		//console.log(newBrackets)
 		const updatedTournament = { ...tournament, brackets: newBrackets };
+		//Quick debug thing: Initialize matches if tournament has entrants
+		if (tournament.entrants) {
+			//Need to convert refs to objects...So they can be converted back to refs LOL
+			const entrantData = await refsToObjects(tournament.entrants);
+			console.log("BRACKET CREATION: Entrants:")
+			console.log(entrantData)
+			updatedTournament.brackets[0] = await initializeMatches(updatedTournament.brackets[0], entrantData);
+			//Also send the bracket to the RTDB
+			await sendBracketToRTDB(updatedTournament.brackets[0], true);
+		}
 		await updateTournament(updatedTournament);
 		alert("Updated Tournament with Brackets")
 	};
