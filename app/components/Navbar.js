@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import tournamentLogo from "../../public/sunsab_tournaments_logo.png";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -30,12 +32,15 @@ export default function Navbar() {
   }, [dropdownRef]);
 
   return (
-    <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center sticky top-0 z-100">
-      <Link
-        href="/"
-        className="bg-sunsab-yellow text-sunsab-blue ml-2 rounded p-2.5 flex justify-start"
-      >
-        SunSab Tournaments
+    <nav className="flex w-full p-2 ml-2 bg-sunsab-white justify-between items-center sticky top-0 z-100">
+      <Link href="/" className="flex items-center">
+        <Image
+          src={tournamentLogo}
+          alt="SunSab Tournaments"
+          width={150}
+          height={50}
+          className="mr-2"
+        />
       </Link>
 
       <div className="relative" ref={dropdownRef}>
