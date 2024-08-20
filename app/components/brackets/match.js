@@ -83,9 +83,9 @@ export default function Match({match, handleWinner, handleScore}) {
                                 player.user && (
                                     <div key={index} className="flex flex-col items-center w-full">
                                         <div className="flex items-center">
-                                            {playerName === "player1" ? (
+                                            {index %2 == 0 ? (
                                                 <div className="flex flex-row items-center">
-                                                    <h1 className="text-lg font-bold text-gray-900">{player.user.username}</h1>
+                                                    <button className="text-lg font-bold text-gray-900" onClick={() => handleDeclareWinner(playerName)}>{player.user.username}</button>
                                                     <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center">
                                                         <span className="text-xl font-bold text-sunsab-yellow">{player.score}</span>
                                                     </div>
@@ -95,7 +95,7 @@ export default function Match({match, handleWinner, handleScore}) {
                                                     <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center text-left mx-auto">
                                                         <span className="text-xl font-bold text-sunsab-yellow">{player.score}</span>
                                                     </div>
-                                                    <h1 className="text-lg font-bold text-gray-900 text-right mx-auto">{player.user.username}</h1>
+                                                    <button className="text-lg font-bold text-gray-900" onClick={() => handleDeclareWinner(playerName)}>{player.user.username}</button>
                                                 </div>
                                             )}
                                         </div>
