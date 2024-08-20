@@ -33,8 +33,9 @@ export default function Single({ bracket }) {
 		  <div className="flex overflow-x-auto space-x-4">
 			{bracket ? (
 			  Object.entries(bracket.matches).map(([roundName, round], index) => (
-				<div key={index} className="flex-shrink-0 w-80 p-4 bg-white">
+				<div key={index} className="flex-shrink-0 w-80 p-4 bg-none">
 				  <div className="font-bold text-xl mb-4 text-center text-sunsab-yellow">{capitalize(roundName)}</div>
+				  <div className="border-t border-gray-400 w-full my-2"></div>
 				  <div className="space-y-4 flex flex-col justify-evenly h-full">
 					{Object.entries(round).map(([matchName, match], matchIndex) => (
 					  <Match

@@ -11,6 +11,7 @@ module.exports = {
         "sunsab-white": "#ffffff",
         "sunsab-blue": "#0F1011",
         "sunsab-yellow": "#f0b80b",
+		"sunsab-yellow-hover": "#f0c954",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

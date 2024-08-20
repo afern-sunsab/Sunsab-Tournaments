@@ -84,7 +84,7 @@ export default function Page({ params }){
 			  {brackets.length > 0 ? (
 				<div>
 				  {brackets.map((bracket, index) => (
-					<div key={index} className="border border-gray-300 rounded-lg p-4 mb-6 bg-white shadow-md">
+					<div key={index} className="border border-gray-300 rounded-lg p-4 mb-6 bg-gray-100 shadow-md">
 					  <Single bracket={bracket} />
 					</div>
 				  ))}

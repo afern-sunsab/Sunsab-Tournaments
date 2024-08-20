@@ -33,7 +33,7 @@ export default function Navbar() {
     <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center">
       <Link
         href="/"
-        className="bg-sunsab-yellow text-sunsab-blue ml-2 rounded p-2.5 flex justify-start"
+        className="bg-sunsab-yellow text-white font-bold ml-2 rounded p-2.5 flex justify-start"
       >
         SunSab Tournaments
       </Link>
