@@ -98,7 +98,7 @@ export default function Page() {
   };
 
   return (
-    <main className="bg-sunsab-white text-sunsab-blue p-6">
+    <main className="bg-sunsab-white text-sunsab-blue p-6 ml-28 mr-28">
       {user ? (
         <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
           <label htmlFor="name" className="text-sm font-medium">
@@ -193,7 +193,7 @@ export default function Page() {
               className="border border-sunsab-blue rounded-md py-2 px-3 text-sm focus:outline-none focus:border-sunsab-yellow"
             />
           </div>
-          <button className="bg-sunsab-yellow text-sunsab-blue font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">
+          <button className="bg-sunsab-yellow hover:bg-yellow-400 text-sunsab-blue font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">
             Submit
           </button>
         </form>

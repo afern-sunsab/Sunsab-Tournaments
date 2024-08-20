@@ -30,7 +30,7 @@ export default function Navbar() {
   }, [dropdownRef]);
 
   return (
-    <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center">
+    <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center sticky top-0 z-100">
       <Link
         href="/"
         className="bg-sunsab-yellow text-sunsab-blue ml-2 rounded p-2.5 flex justify-start"
