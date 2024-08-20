@@ -8,18 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        white: "#ffffff",
-        blue: "#0F1011",
-        yellow: "#f0b80b",
+        "sunsab-white": "#ffffff",
+        "sunsab-blue": "#0F1011",
+        "sunsab-yellow": "#f0b80b",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-	  colors: {
-		"sunsab-yellow": "#f0b80b"
-	  }
     },
   },
   plugins: [],
