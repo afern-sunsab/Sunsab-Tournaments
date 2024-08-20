@@ -37,70 +37,83 @@ export default function Match({match, handleWinner, handleScore}) {
 	}
 
 	return (
-		<main>
-		{match &&
-		<div onClick={togglePopup} className="max-w-48 mx-auto bg-slate-200 px-2 py-1.5 rounded-sm shadow-md transition duration-250 ease-in-out hover:bg-slate-500 hover:text-white hover:shadow-lg cursor-pointer">
-			<div className="flex flex-col items-center justify-center">
-			<div className="flex items-center justify-between w-full mt-1">
-					{match.player1.user ? (
-						<div className='flex'>
-							<div className="flex items-center">
-									<h1 className="text-md font-medium">{match.player1.user.username}</h1>
-							</div>
-							<div className="w-8 h-8 bg-gray-300 rounded-md flex items-center justify-center">
-								<span className="text-sm font-medium">{match.player1.score}</span>
-							</div>
-						</div>
-					) : (<></>)}
-				</div>
-				<div className="border-t border-gray-400 w-full my-1"></div>
-				<div className="flex items-center justify-between w-full mt-1">
-					{match.player2.user ? (
-						<div className='flex'>
-							<div className="flex items-center">
-								<h1 className="text-md font-medium">{match.player2.user.username}</h1>
-							</div>
-							<div className="w-8 h-8 bg-gray-300 rounded-md flex items-center justify-center">
-								<span className="text-sm font-medium">{match.player2.score}</span>
-							</div>
-						</div>
-					) : (<></>)}
-				</div>
+		<div className="relative">
+		  <div
+			onClick={togglePopup}
+			className="max-w-xs mx-auto bg-gray-300 px-4 py-2 rounded-md shadow-md transition duration-200 ease-in-out hover:bg-gray-400 cursor-pointer"
+		  >
+			<div className="flex flex-col items-center">
+			  <div className="flex items-center justify-between w-full mt-1">
+				{match.player1.user && (
+				  <div className="flex items-center w-full justify-between">
+					<h1 className="text-md font-medium text-gray-900">{match.player1.user.username}</h1>
+					<div className="w-16 h-8 bg-gray-200 rounded-md flex items-center justify-end px-2">
+					  <span className="text-sm font-medium text-gray-900">{match.player1.score}</span>
+					</div>
+				  </div>
+				)}
+			  </div>
+			  <div className="border-t border-gray-400 w-full my-1"></div>
+			  <div className="flex items-center justify-between w-full mt-1">
+				{match.player2.user && (
+				  <div className="flex items-center w-full justify-between">
+					<h1 className="text-md font-medium text-gray-900">{match.player2.user.username}</h1>
+					<div className="w-16 h-8 bg-gray-200 rounded-md flex items-center justify-end px-2">
+					  <span className="text-sm font-medium text-gray-900">{match.player2.score}</span>
+					</div>
+				  </div>
+				)}
+			  </div>
 			</div>
-
-		{showPopup && (
-			<div style={{ cursor: 'default' }} className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 z-50 text-black">
-			<div onClick={(e) => e.stopPropagation()} className="bg-white p-4 rounded-md shadow-md" >
-				<p className="text-lg font-medium mb-2">Match Details</p>
-					<p>
-						<button onClick={() => handleDeclareWinner("player1")}>
-							{match.player1.user ? match.player1.user.username : ""}
-						</button>
-						vs
-						<button onClick={() => handleDeclareWinner("player2")}>
-							{match.player2.user ? match.player2.user.username : ""}
-						</button>
-						</p>
-						
-				<p>Score: 
-					<button onClick={() => handleChangeScore("player1", match.player1.score + 1)}>
-						{match.player1.score}
-					</button>
-					-
-					<button onClick={() => handleChangeScore("player2", match.player2.score + 1)}>
-						{match.player2.score}
-					</button>
+		  </div>
+	
+		  {showPopup && (
+			<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-60 z-50">
+			  <div
+				onClick={(e) => e.stopPropagation()}
+				className="bg-white p-6 rounded-md shadow-lg w-80"
+			  >
+				<p className="text-lg font-semibold mb-4 text-gray-900">Match Details</p>
+				<p className="mb-4 text-gray-700">
+				  <button
+					className="text-blue-600 hover:underline"
+					onClick={() => handleDeclareWinner("player1")}
+				  >
+					{match.player1.user ? match.player1.user.username : ""}
+				  </button>
+				  {" vs "}
+				  <button
+					className="text-blue-600 hover:underline"
+					onClick={() => handleDeclareWinner("player2")}
+				  >
+					{match.player2.user ? match.player2.user.username : ""}
+				  </button>
 				</p>
-				
-				<button className="mt-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
-						onClick={togglePopup}>
-				Close
+				<p className="mb-4 text-gray-700">
+				  Score:
+				  <button
+					className="text-gray-800 hover:underline mx-2"
+					onClick={() => handleChangeScore("player1", match.player1.score + 1)}
+				  >
+					{match.player1.score}
+				  </button>
+				  -
+				  <button
+					className="text-gray-800 hover:underline mx-2"
+					onClick={() => handleChangeScore("player2", match.player2.score + 1)}
+				  >
+					{match.player2.score}
+				  </button>
+				</p>
+				<button
+				  className="mt-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+				  onClick={togglePopup}
+				>
+				  Close
 				</button>
+			  </div>
 			</div>
-			</div>
-		)}
+		  )}
 		</div>
+	  );
 	}
-	</main>
-	)
-}

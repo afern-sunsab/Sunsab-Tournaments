@@ -76,29 +76,26 @@ export default function Page({ params }){
     //     }
     // }, [brackets]);
 
-	return(
-		<main className="bg-white text-black p-6">
-			{tournament ? (
+	return (
+		<main className="bg-gray-100 text-gray-900 p-8">
+		  {tournament ? (
+			<div>
+			  <h1 className="text-3xl font-extrabold mb-6 text-center text-sunsab-yellow">{tournament.name} Brackets</h1>
+			  {brackets.length > 0 ? (
 				<div>
-					<h1 className="text-2xl font-bold mb-4">{tournament.name} Brackets</h1>
-					{brackets.length > 0 ? (
-						<div>
-							{brackets.map((bracket, index) => (
-								<div key={index} className="border rounded-md p-4 mb-4 hover:bg-gray-100">
-									{/* <h2 className="text-xl font-bold mb-2">{bracket.name}</h2>
-									<h3 className="text-lg mb-4">Bracket Type: {bracket.type}</h3>
-									<SingleElimination rounds={bracket.rounds} /> */}
-									<Single bracket={bracket}/>
-								</div>
-							))}
-						</div>
-					) : (
-						<div className="text-gray-600">No brackets</div>
-					)}
+				  {brackets.map((bracket, index) => (
+					<div key={index} className="border border-gray-300 rounded-lg p-4 mb-6 bg-white shadow-md">
+					  <Single bracket={bracket} />
+					</div>
+				  ))}
 				</div>
-			) : (
-				<div className="text-gray-600">No tournament</div>
-			)}
+			  ) : (
+				<div className="text-gray-600 text-center">No brackets available</div>
+			  )}
+			</div>
+		  ) : (
+			<div className="text-gray-600 text-center">No tournament available</div>
+		  )}
 		</main>
-	)
-}
+	  );
+	}

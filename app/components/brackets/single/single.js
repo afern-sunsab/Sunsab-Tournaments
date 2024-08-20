@@ -16,6 +16,10 @@ export default function Single({ bracket }) {
 		}));
 	}
 
+	const capitalize = (string) => {
+		return string.charAt(0).toUpperCase() + string.slice(1)
+	}
+
 	const handleWinner = async (round, match, player) => {
 		await declareWinner(bracket, round, match, player);
 	}
@@ -25,30 +29,28 @@ export default function Single({ bracket }) {
 	}
 
 	return (
-		<main className="text-black">
-			<div className="flex overflow-x-auto space-x-4">
-				{bracket ? (
-					Object.entries(bracket.matches).map(([roundName, round], index) => (
-						<div key={index} className="flex-shrink-0 w-64 p-4">
-							<div className="font-bold text-lg mb-2">{roundName}</div>
-							<div className="space-y-4"> {/* Adds vertical spacing between matches */}
-								{Object.entries(round).map(([matchName, match], matchIndex) => (
-									<Match
-										key={matchIndex}
-										match={match}
-										handleWinner={(playerName) => handleWinner(roundName, matchName, playerName)}
-										handleScore={(playerName, score) => handleChangeScore(roundName, matchName, playerName, score)}
-									/>
-								))}
-							</div>
-						</div>
-					))
-				) : (
-					<div className="text-gray-500">No rounds available</div>
-				)}
-			</div>
-		</main>
-	);
-	
-	
-}
+		<div className="text-gray-900">
+		  <div className="flex overflow-x-auto space-x-4">
+			{bracket ? (
+			  Object.entries(bracket.matches).map(([roundName, round], index) => (
+				<div key={index} className="flex-shrink-0 w-80 p-4 bg-white">
+				  <div className="font-bold text-xl mb-4 text-center text-sunsab-yellow">{capitalize(roundName)}</div>
+				  <div className="space-y-4 flex flex-col justify-evenly h-full">
+					{Object.entries(round).map(([matchName, match], matchIndex) => (
+					  <Match
+						key={matchIndex}
+						match={match}
+						handleWinner={(playerName) => handleWinner(roundName, matchName, playerName)}
+						handleScore={(playerName, score) => handleChangeScore(roundName, matchName, playerName, score)}
+					  />
+					))}
+				  </div>
+				</div>
+			  ))
+			) : (
+			  <div className="text-gray-500 text-center">No rounds available</div>
+			)}
+		  </div>
+		</div>
+	  );
+	}
