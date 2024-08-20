@@ -69,6 +69,8 @@ export default function Page({ params }) {
 		}
 		await updateTournament(updatedTournament);
 		alert("Updated Tournament with Brackets")
+		//Redirect to the tournament page
+		window.location.href = `/tournaments/${tournament.docId}`;
 	};
 
 	return (
