@@ -1,6 +1,8 @@
 import { forEachMatch, forEachRound } from "@utils/bracket_services";
 import Match from "../match";
 import { declareWinner, setScore } from "@utils/bracket_services";
+import { useEffect } from "react";
+import { convertBracketToUserData } from "@utils/bracket_services";
 
 export default function Single({ bracket }) {
 
@@ -9,6 +11,12 @@ export default function Single({ bracket }) {
 
 	// 	})
 	// }
+
+	// Test: Output bracket data when it changes
+	useEffect(() => {
+		console.log("Bracket changed:")
+		console.log(bracket);
+	}, [bracket])
 
 	const forEachMatch = async (round) => {
 		await Promise.all(Object.keys(round).map(async (match) => {
@@ -21,11 +29,18 @@ export default function Single({ bracket }) {
 	}
 
 	const handleWinner = async (round, match, player) => {
+		console.log("SINGLE.JS: Declaring winner: " + player + " in " + round + " of " + match);
 		await declareWinner(bracket, round, match, player);
+		//console.log("New bracket:")
+		//console.log(bracket);
+		//Reconvert bracket to user data even thought it shouldn't be changing in the first place
+		bracket = await convertBracketToUserData(bracket);
 	}
 
 	const handleChangeScore = async (round, match, player, score) => {
 		await setScore(bracket, round, match, player, score);
+		//Again, reconvert bracket to user data despite setScore supposedly not changing the bracket
+		bracket = await convertBracketToUserData(bracket);
 	}
 
 	return (
