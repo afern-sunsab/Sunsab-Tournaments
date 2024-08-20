@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -13,18 +14,33 @@ export default function Navbar() {
     setIsDropdownOpen(false);
   };
 
+  // Add event listener to close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
-    <nav className="flex w-full p-2 bg-white justify-between items-center">
+    <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center">
       <Link
         href="/"
-        className="bg-yellow text-blue active:bg-blue-400 active:dark:bg-blue-600 ml-2 dark:text-white dark:bg-blue rounded p-2.5 flex justify-start"
+        className="bg-sunsab-yellow text-sunsab-blue ml-2 rounded p-2.5 flex justify-start"
       >
         SunSab Tournaments
       </Link>
 
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <button
-          className="bg-yellow text-black active:bg-blue active:dark:bg-blue-600 dark:text-white dark:bg-blue rounded p-2.5 flex items-center"
+          className="bg-sunsab-yellow text-sunsab-blue mr-2 rounded p-2.5 flex items-center"
           onClick={toggleDropdown}
         >
           Menu
@@ -47,28 +63,28 @@ export default function Navbar() {
           <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded">
             <Link
               href="/login"
-              className="block px-4 py-2 text-black hover:bg-blue-100 dark:hover:bg-blue-600"
+              className="block px-4 py-2 text-black hover:bg-sunsab-yellow"
               onClick={handleMenuItemClick}
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="block px-4 py-2 text-black hover:bg-blue-100 dark:hover:bg-blue-600"
+              className="block px-4 py-2 text-black hover:bg-sunsab-yellow"
               onClick={handleMenuItemClick}
             >
               Sign Up
             </Link>
             <Link
               href="/tournaments"
-              className="block px-4 py-2 text-black hover:bg-blue-100 dark:hover:bg-blue-600"
+              className="block px-4 py-2 text-black hover:bg-sunsab-yellow"
               onClick={handleMenuItemClick}
             >
               Tournaments
             </Link>
             <Link
               href="/create"
-              className="block px-4 py-2 text-black hover:bg-blue-100 dark:hover:bg-blue-600"
+              className="block px-4 py-2 text-black hover:bg-sunsab-yellow"
               onClick={handleMenuItemClick}
             >
               Create
