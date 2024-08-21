@@ -32,7 +32,7 @@ export default function Navbar() {
   }, [dropdownRef]);
 
   return (
-    <nav className="flex w-full p-2 bg-sunsab-white justify-between items-center sticky top-0 z-100">
+    <nav className="flex w-full p-2 bg-sunsab-white shadow-md justify-between items-center sticky top-0 z-10">
       <Link href="/" className="flex items-center">
         <Image
           src={tournamentLogo}
