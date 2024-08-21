@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import tournamentLogo from "../../public/sunsab_tournaments_logo.png";
+//import tournamentLogo from "../../public/sunsab_tournaments_logo.png";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function Navbar() {
     <nav className="flex w-full p-2 bg-sunsab-white shadow-md justify-between items-center sticky top-0 z-10">
       <Link href="/" className="flex items-center">
         <Image
-          src={tournamentLogo}
+          src={"/sunsab_tournaments_logo.png"}
           alt="SunSab Tournaments"
           width={150}
           height={50}
